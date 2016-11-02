@@ -1,0 +1,3367 @@
+   #[1]alternate [2]Edit this page [3]Wikipedia (en) [4]copyright
+
+PowerShell
+
+   From Wikipedia, the free encyclopedia
+   Jump to: [5]navigation, [6]search
+
+   CAPTION: PowerShell
+
+   [7]PowerShell 5.0 icon.png
+   [8]Windows PowerShell 1.0 PD.png
+   Screenshot of a Windows PowerShell session
+   [9]Paradigm [10]Multi-paradigm: [11]Imperative, [12]pipeline,
+   [13]object-oriented, [14]functional and [15]reflective
+   [16]Designed by Jeffrey Snover, Bruce Payette, James Truher (et al.)
+   [17]Developer [18]Microsoft
+   First appeared November 14, 2006; 9 years ago (2006-11-14)
+   [19]Stable release
+   5.1.14393 / August 2, 2016; 2 months ago (2016-08-02)
+   [20]Preview release
+   6.0.0 Alpha 10 / September 15, 2016; 45 days ago (2016-09-15)
+   [21]Typing discipline [22]Strong, [23]safe, [24]implicit and
+   [25]dynamic
+   [26]Platform [27].NET Framework, [28].NET Core
+   [29]OS [30]Windows 7 and later, [31]OS X, [32]CentOS, [33]Ubuntu
+   [34]License [35]MIT License^[36][1] (but the Windows component remains
+   [37]proprietary)
+   [38]Filename extensions
+     * .ps1 (Script)
+     * .ps1xml (XML Document)
+     * .psc1 (Console File)
+     * .psd1 (Data File)
+     * .psm1 (Script Module)
+     * .pssc (Session Configuration File)
+     * .cdxml (Cmdlet Definition XML Document)
+
+   Website [39]microsoft.com/powershell
+   Influenced by
+   [40]Ksh, [41]Perl, [42]C#, [43]CL, [44]DCL, [45]SQL, [46]Tcl, [47]Tk,
+   [48]Chef, [49]Puppet^[50][2]
+
+   PowerShell (including Windows PowerShell and PowerShell Core) is a task
+   automation and configuration management framework from [51]Microsoft,
+   consisting of a [52]command-line [53]shell and associated [54]scripting
+   language built on the [55].NET Framework. PowerShell provides full
+   access to [56]COM and [57]WMI, enabling administrators to perform
+   administrative tasks on both local and remote Windows systems as well
+   as [58]WS-Management and [59]CIM enabling management of remote Linux
+   systems and network devices. Initially a Windows component only,
+   PowerShell was made [60]open-source and [61]cross-platform on 18 August
+   2016.^[62][3]
+
+   In PowerShell, administrative tasks are generally performed by cmdlets
+   (pronounced command-lets), which are specialized .NET [63]classes
+   implementing a particular operation. Sets of cmdlets may be combined
+   into scripts, executables (which are standalone applications), or by
+   instantiating regular .NET classes (or WMI/COM
+   Objects).^[64][4]^[65][5] These work by accessing data in different
+   data stores, like the [66]file system or [67]registry, which are made
+   available to the PowerShell runtime via PowerShell providers.
+
+   PowerShell also provides a hosting [68]API with which the PowerShell
+   runtime can be embedded inside other applications. These applications
+   can then use PowerShell functionality to implement certain operations,
+   including those exposed via the [69]graphical interface. This
+   capability has been used by [70]Microsoft Exchange Server 2007 to
+   expose its management functionality as PowerShell cmdlets and providers
+   and implement the [71]graphical management tools as PowerShell hosts
+   which invoke the necessary cmdlets.^[72][4]^[73][6] Other Microsoft
+   applications including [74]Microsoft SQL Server 2008 also expose their
+   management interface via PowerShell cmdlets.^[75][7]
+
+   PowerShell includes its own extensive, console-based help, similar to
+   [76]man pages in [77]Unix shells, via the Get-Help cmdlet. Local help
+   contents can be retrieved from the Internet via Update-Help cmdlet.
+   Alternatively, help from the web can be acquired on a case-by-case
+   basis via the -online switch to Get-Help.
+
+Contents
+
+     * [78]1 Background
+     * [79]2 Design
+          + [80]2.1 Cmdlets
+          + [81]2.2 Pipeline
+          + [82]2.3 Scripting
+          + [83]2.4 Hosting
+     * [84]3 Desired State Configuration
+     * [85]4 Versions
+          + [86]4.1 PowerShell 1.0
+          + [87]4.2 PowerShell 2.0
+          + [88]4.3 PowerShell 3.0
+          + [89]4.4 PowerShell 4.0
+          + [90]4.5 PowerShell 5.0
+     * [91]5 Comparison of cmdlets with similar commands
+     * [92]6 File extensions
+     * [93]7 Application support
+          + [94]7.1 Snap-ins and hosts
+     * [95]8 Alternative implementation
+     * [96]9 See also
+     * [97]10 References
+     * [98]11 Further reading
+     * [99]12 External links
+
+Background[[100]edit]
+
+   Every released version of [101]Microsoft DOS and [102]Microsoft Windows
+   for [103]personal computers has included a command-line interface tool
+   ([104]shell). These are [105]COMMAND.COM (in installations relying on
+   [106]MS-DOS, including [107]Windows 9x) and [108]cmd.exe (in
+   [109]Windows NT family operating systems). The shell is a [110]command
+   line interpreter that supports a few basic commands. For other
+   purposes, a separate [111]console application must be invoked from the
+   shell. The shell also includes a scripting language ([112]batch files),
+   which can be used to automate various tasks. However, the shell cannot
+   be used to automate all facets of [113]GUI functionality, in part
+   because command-line equivalents of operations exposed via the
+   graphical interface are limited, and the scripting language is
+   elementary and does not allow the creation of complex scripts. In
+   [114]Windows Server 2003, the situation was improved, but scripting
+   support was still considered unsatisfactory.^[115][8]
+
+   Microsoft attempted to address some of these shortcomings by
+   introducing the [116]Windows Script Host in 1998 with [117]Windows 98,
+   and its command-line based host: cscript.exe. It integrates with the
+   [118]Active Script engine and allows scripts to be written in
+   compatible languages, such as [119]JScript and [120]VBScript,
+   leveraging the [121]APIs exposed by applications via [122]COM. However,
+   it has its own deficiencies: it is not integrated with the shell, its
+   documentation is not very accessible, and it quickly gained a
+   reputation as a system [123]vulnerability vector after several
+   high-profile [124]computer viruses exploited weaknesses in its security
+   provisions. Different versions of Windows provided various
+   special-purpose command line interpreters (such as [125]netsh and
+   [126]WMIC) with their own command sets. None of them were integrated
+   with the command shell; nor were they interoperable.
+
+   By 2002 Microsoft had started to develop a new approach to command line
+   management, including a shell called Monad (also known as Microsoft
+   Shell or MSH). The shell and the ideas behind it were published in
+   August 2002 in a white paper entitled Monad Manifesto.^[127][9] Monad
+   was to be a new extensible command shell with a fresh design that would
+   be capable of automating a full range of core administrative tasks.
+   Microsoft first showed off Monad at the Professional Development
+   Conference in Los Angeles in October 2003. A private beta program began
+   a few months later which eventually led to a public beta program.
+
+   Microsoft published the first Monad public [128]beta release on June
+   17, 2005, Beta 2 on September 11, 2005, and Beta 3 on January 10, 2006.
+   Not much later, on April 25, 2006 Microsoft formally announced that
+   Monad had been renamed Windows PowerShell, positioning it as a
+   significant part of their management technology offerings.^[129][10]
+   Release Candidate 1 of PowerShell was released at the same time. A
+   significant aspect of both the name change and the RC was that this was
+   now a component of Windows, and not an add-on product.
+
+   Release Candidate 2 of PowerShell version 1 was released on September
+   26, 2006 with final Release to the web (RTW) on November 14, 2006 and
+   announced at TechEd Barcelona. PowerShell for earlier versions of
+   Windows was released on January 30, 2007.^[130][11]
+
+   PowerShell v2.0 development began before PowerShell v1.0 shipped.
+   During the development, Microsoft shipped three [131]community
+   technology preview (CTP). Microsoft made these releases available to
+   the public. The last CTP release of Windows PowerShell v2.0 was made
+   available in December 2008.
+   PowerShell for Linux 6.0 Alpha 9 on [132]Ubuntu 14.04 x64
+
+   PowerShell v2.0 was completed and released to manufacturing in August
+   2009, as an integral part of Windows 7 and Windows Server 2008 R2.
+   Versions of PowerShell for Windows XP, Windows Server 2003, Windows
+   Vista and Windows Server 2008 were released in October 2009 and are
+   available for download for both 32-bit and 64-bit platforms.^[133][12]
+
+   Windows 10 shipped a testing framework for PowerShell.^[134][13]
+
+   On 18 August 2016, Microsoft announced^[135][14] that they had made
+   PowerShell open-source and cross-platform with support for Windows,
+   [136]OS X, [137]CentOS and [138]Ubuntu.^[139][3] The source code was
+   published on [140]GitHub. ^[141][15] The move to open source created a
+   second incarnation of PowerShell called "PowerShell Core", which runs
+   on [142].NET Core. It is distinct from "Windows PowerShell", which runs
+   on the full [143].NET Framework.^[144][16] PowerShell Core will be
+   shipped with [145]Windows Server 2016 Nano Server.^[146][17]
+
+Design[[147]edit]
+
+   PowerShell's developers based the core grammar of the tool on that of
+   [148]POSIX 1003.2.^[149][18]
+
+   Windows PowerShell can execute four kinds of named commands:^[150][19]
+     * cmdlets ([151].NET Framework programs designed to interact with
+       PowerShell)
+     * PowerShell scripts (files suffixed by .ps1)
+     * PowerShell functions
+     * standalone [152]executable programs
+
+   If a command is a standalone executable program, PowerShell.exe
+   launches it in a separate [153]process; if it is a cmdlet, it executes
+   in the PowerShell process. PowerShell provides an interactive
+   [154]command-line interface, wherein the commands can be entered and
+   their output displayed. The user interface, based on the [155]Win32
+   console, offers customizable [156]tab completion. PowerShell enables
+   the creation of [157]aliases for cmdlets, which PowerShell textually
+   translates into invocations of the original commands. PowerShell
+   supports both [158]named and positional [159]parameters for commands.
+   In executing a cmdlet, the job of binding the argument value to the
+   parameter is done by PowerShell itself, but for external executables,
+   arguments are parsed by the external executable independently of
+   PowerShell interpretation.^[[160]citation needed]
+
+   The PowerShell Extended Type System (ETS) is based on the .NET type
+   system, but with extended semantics (for example, propertySets and
+   third-party extensibility). For example, it enables the creation of
+   different views of objects by exposing only a subset of the data
+   fields, properties, and methods, as well as specifying custom
+   formatting and sorting behavior. These views are mapped to the original
+   object using [161]XML-based configuration files.^[162][20]
+
+Cmdlets[[163]edit]
+
+   Cmdlets are specialized commands in the PowerShell environment that
+   implement specific functions. These are the native commands in the
+   PowerShell stack. Cmdlets follow a Verb-Noun naming pattern, such as
+   Get-ChildItem, helping to make them self-descriptive.^[164][21] Cmdlets
+   output their results as objects or as collections thereof (including
+   arrays), and can optionally receive input in that form, making them
+   suitable for use as recipients in a pipeline. But whereas PowerShell
+   allows arrays and other collections of objects to be written to the
+   pipeline, cmdlets always process objects individually. For collections
+   of objects, PowerShell invokes the cmdlet on each object in the
+   collection, in sequence.^[165][21]
+
+   Cmdlets are specialized .NET [166]classes, which the PowerShell runtime
+   instantiates and invokes at run-time. Cmdlets derive either from Cmdlet
+   or from PSCmdlet, the latter being used when the cmdlet needs to
+   interact with the PowerShell runtime.^[167][21] These base classes
+   specify certain methods - BeginProcessing(), ProcessRecord() and
+   EndProcessing() - which the cmdlet's implementation overrides to
+   provide the functionality. Whenever a cmdlet runs, PowerShell invokes
+   these methods in sequence, with ProcessRecord() being called if it
+   receives pipeline input.^[168][22] If a collection of objects is piped,
+   the method is invoked for each object in the collection. The class
+   implementing the Cmdlet must have one .NET [169]attribute -
+   CmdletAttribute - which specifies the verb and the noun that make up
+   the name of the cmdlet. Common verbs are provided as an
+   [170]enum.>^[171][23]^[172][24]
+
+   If a cmdlet receives either pipeline input or command-line parameter
+   input, there must be a corresponding [173]property in the class, with a
+   [174]mutator implementation. PowerShell invokes the mutator with the
+   parameter value or pipeline input, which is saved by the mutator
+   implementation in class variables. These values are then referred to by
+   the methods which implement the functionality. Properties that map to
+   command-line parameters are marked by ParameterAttribute^[175][25] and
+   are set before the call to BeginProcessing(). Those which map to
+   pipeline input are also flanked by ParameterAttribute, but with the
+   ValueFromPipeline attribute parameter set.^[176][26]
+
+   The implementation of these cmdlet classes can refer to any [177].NET
+   [178]API and may be in any [179].NET language. In addition, PowerShell
+   makes certain APIs available, such as WriteObject(), which is used to
+   access PowerShell-specific functionality, such as writing resultant
+   objects to the pipeline. Cmdlets can use .NET data access [180]APIs
+   directly or use the PowerShell infrastructure of PowerShell Providers,
+   which make data stores addressable using unique [181]paths. Data stores
+   are exposed using drive letters, and hierarchies within them, addressed
+   as directories. Windows PowerShell ships with providers for the
+   [182]file system, [183]registry, the [184]certificate store, as well as
+   the namespaces for command aliases, variables, and functions.^[185][27]
+   Windows PowerShell also includes various cmdlets for managing various
+   [186]Windows systems, including the [187]file system, or using
+   [188]Windows Management Instrumentation to control [189]Windows
+   components. Other applications can register cmdlets with PowerShell,
+   thus allowing it to manage them, and, if they enclose any datastore
+   (such as databases), they can add specific providers as
+   well.^[[190]citation needed]
+
+   PowerShell V2 added a more portable version of Cmdlets called Modules.
+   The PowerShell V2 release notes state:
+
+     "Modules allow script developers and administrators to partition and
+     organize their Windows PowerShell code in self-contained, reusable
+     units. Code from a module executes in its own self-contained context
+     and does not affect the state outside of the module. Modules also
+     enable you to define a restricted runspace environment by using a
+     script."^[[191]citation needed]
+
+Pipeline[[192]edit]
+
+   PowerShell implements the concept of a pipeline, which enables piping
+   the output of one cmdlet to another cmdlet as input. For example, the
+   output of the Get-Process cmdlet could be piped to the Where-Object to
+   filter any process that has less than 1 MB of paged memory, and then to
+   the Sort-Object cmdlet (e.g., to sort the objects by handle count), and
+   then finally to the Select-Object cmdlet to select just the first 10
+   (i.e., the 10 processes based on handle count).^[[193]citation needed]
+
+   As with [194]Unix pipelines, PowerShell pipelines can construct complex
+   commands, using the | operator to connect stages. However, the
+   PowerShell pipeline differs from Unix pipelines in that stages execute
+   within the PowerShell runtime rather than as a set of processes
+   coordinated by the operating system, and structured .NET objects,
+   rather than [195]byte streams, are passed from one stage to the next.
+   Using [196]objects and executing stages within the PowerShell runtime
+   eliminates the need to [197]serialize data structures, or to extract
+   them by explicitly [198]parsing text output.^[199][28] An object can
+   also encapsulate certain functions that work on the contained data,
+   which become available to the recipient command for
+   use.^[200][29]^[201][30] For the last cmdlet in a pipeline, PowerShell
+   automatically pipes its output object to the Out-Default cmdlet, which
+   transforms the objects into a stream of format objects and then renders
+   those to the screen.^[202][31]^[203][32]
+
+   Because all PowerShell objects are .NET objects, they share a
+   .ToString() method, which retrieves the text representation of the data
+   in an object. In addition, PowerShell allows formatting definitions to
+   be specified, so the text representation of objects can be customized
+   by choosing which data elements to display, and in what manner.
+   However, in order to maintain backwards compatibility, if an external
+   executable is used in a pipeline, it receives a text stream
+   representing the object, instead of directly integrating with the
+   PowerShell type system.^[204][33]^[205][34]^[206][35]
+
+Scripting[[207]edit]
+
+   Windows PowerShell includes a [208]dynamically typed [209]scripting
+   language which can implement complex operations using cmdlets
+   [210]imperatively. The scripting language supports variables,
+   functions, branching ([211]if-then-else), loops ([212]while, [213]do,
+   [214]for, and [215]foreach), structured error/exception handling and
+   [216]closures/[217]lambda expressions,^[218][36] as well as integration
+   with .NET. Variables in PowerShell scripts are prefixed with $.
+   Variables can be assigned any value, including the output of cmdlets.
+   Strings can be enclosed either in single quotes or in double quotes:
+   when using double quotes, variables will be expanded even if they are
+   inside the quotation marks. Enclosing the path to a file in braces
+   preceded by a dollar sign (as in ${C:\foo.txt}) creates a reference to
+   the contents of the file. If it is used as an [219]L-value, anything
+   assigned to it will be written to the file. When used as an
+   [220]R-value, the contents of the file will be read. If an object is
+   assigned, it is serialized before being stored.^[[221]citation needed]
+
+   Object members can be accessed using . notation, as in C# syntax.
+   PowerShell provides special variables, such as $args, which is an array
+   of all the command line arguments passed to a function from the command
+   line, and $_, which refers to the current object in the
+   pipeline.^[222][37] PowerShell also provides [223]arrays and
+   [224]associative arrays. The PowerShell scripting language also
+   evaluates arithmetic expressions entered on the command line
+   immediately, and it parses common abbreviations, such as GB, MB, and
+   KB.^[225][38]^[226][39]
+
+   Using the function keyword, PowerShell provides for the creation of
+   functions, the following general form:^[227][40]
+function name ($Param1, $Param2)
+{
+  Instructions
+}
+
+   The defined function is invoked in either of the following
+   forms:^[228][40]
+name value1 value2
+name -Param1 value1 -Param2 value2
+
+   PowerShell supports named parameters, positional parameters, switch
+   parameters and dynamic parameters.^[229][40]
+
+   PowerShell allows any .NET methods to be called by providing their
+   namespaces enclosed in brackets ([]), and then using a pair of colons
+   (::) to indicate the static method.^[230][41] For example,
+   [System.Console]::WriteLine("PowerShell"). Objects are created using
+   the New-Object cmdlet. Calling methods of .NET objects is accomplished
+   by using the regular . notation.^[231][41]
+
+   PowerShell scripting language accepts [232]strings, both raw and
+   [233]escaped. A string enclosed between single [234]quotation marks is
+   a raw string while a string enclosed between double quotation marks is
+   an escaped string. PowerShell treats straight and curly quotes as
+   equivalent.^[235][42]
+
+   For error handling, PowerShell provides a .NET-based
+   [236]exception-handling mechanism. In case of errors, objects
+   containing information about the error (Exception object) are thrown,
+   which are caught using the try ... catch construct (although a trap
+   construct is supported as well). However, the action-or-error is
+   configurable; in case of an error, PowerShell can be configured to
+   silently resume execution, without actually throwing the
+   exception.^[237][43]
+
+   Scripts written using PowerShell can be made to persist across sessions
+   in either a .ps1 file or a .psm1 file (the latter is used to implement
+   a module). Later, either the entire script or individual functions in
+   the script can be used. Scripts and functions operate analogously with
+   cmdlets, in that they can be used as commands in pipelines, and
+   parameters can be bound to them. Pipeline objects can be passed between
+   functions, scripts, and cmdlets seamlessly. To prevent unintentional
+   running of scripts, script execution is disabled by default and must be
+   enabled explicitly.^[238][44] Enabling of scripts can be performed
+   either at system, user or session level. PowerShell scripts can be
+   [239]signed to verify their integrity, and are subject to [240]Code
+   Access Security.^[241][45]
+
+   The PowerShell scripting language supports [242]binary prefix notation
+   similar to the [243]scientific notation supported by many programming
+   languages in the C-family.^[244][46]^[[245]better source needed]
+
+Hosting[[246]edit]
+
+   One can also use PowerShell embedded in a management application, which
+   uses the PowerShell runtime to implement the management functionality.
+   For this, PowerShell provides a [247]managed hosting [248]API. Via the
+   APIs, the application can instantiate a runspace (one instantiation of
+   the PowerShell runtime), which runs in the application's [249]process
+   and is exposed as a Runspace object.^[250][4] The state of the runspace
+   is encased in a SessionState object. When the runspace is created, the
+   Windows PowerShell runtime initializes the instantiation, including
+   initializing the providers and enumerating the cmdlets, and updates the
+   SessionState object accordingly. The Runspace then must be opened for
+   either synchronous processing or asynchronous processing. After that it
+   can be used to execute commands.^[[251]citation needed]
+
+   To execute a command, a pipeline (represented by a Pipeline object)
+   must be created and associated with the runspace. The pipeline object
+   is then populated with the cmdlets that make up the pipeline. For
+   sequential operations (as in a PowerShell script), a Pipeline object is
+   created for each statement and nested inside another Pipeline
+   object.^[252][4] When a pipeline is created, Windows PowerShell invokes
+   the pipeline processor, which resolves the cmdlets into their
+   respective [253]assemblies (the command processor) and adds a reference
+   to them to the pipeline, and associates them with InputPipe, Outputpipe
+   and ErrorOutputPipe objects, to represent the connection with the
+   pipeline. The types are verified and parameters bound using
+   [254]reflection.^[255][4] Once the pipeline is set up, the host calls
+   the Invoke() method to run the commands, or its asynchronous equivalent
+   - InvokeAsync(). If the pipeline has the Write-Host cmdlet at the end
+   of the pipeline, it writes the result onto the console screen. If not,
+   the results are handed over to the host, which might either apply
+   further processing or display the output itself.^[[256]citation needed]
+
+   [257]Microsoft Exchange Server 2007 uses the hosting APIs to provide
+   its management GUI. Each operation exposed in the GUI is mapped to a
+   sequence of PowerShell commands (or pipelines). The host creates the
+   pipeline and executes them. In fact, the interactive PowerShell console
+   itself is a PowerShell host, which [258]interprets the scripts entered
+   at command line and creates the necessary Pipeline objects and invokes
+   them.^[[259]citation needed]
+
+Desired State Configuration[[260]edit]
+
+   DSC allows for declaratively specifying how a software environment
+   should be configured.^[261][47]
+
+   Upon running a configuration, DSC will ensure that the system gets the
+   state described in the configuration. DSC configurations are
+   idempotent. The Local Configuration Manager (LCM) periodically polls
+   the system using the control flow described by resources (imperative
+   pieces of DSC) to make sure that the state of a configuration is
+   maintained.
+
+Versions[[262]edit]
+
+   Initially using the code name "Monad", PowerShell was first shown
+   publicly at the Professional Developers Conference in September 2003.
+   All major releases are still supported, and each major release has
+   featured backwards compatibility with preceding versions.
+
+PowerShell 1.0[[263]edit]
+
+   PowerShell 1.0 was released in November 2006 for [264]Windows XP SP2,
+   [265]Windows Server 2003 and [266]Windows Vista. It is an optional
+   component of [267]Windows Server 2008.^[268][48]
+
+PowerShell 2.0[[269]edit]
+
+   Windows PowerShell ISE v2.0, an [270]integrated development environment
+   for PowerShell scripts
+
+   PowerShell 2.0 is integrated with [271]Windows 7 and [272]Windows
+   Server 2008 R2^[273][49] and is released for [274]Windows XP with
+   Service Pack 3, [275]Windows Server 2003 with Service Pack 2, and
+   [276]Windows Vista with Service Pack 1.^[277][50]^[278][51]
+
+   PowerShell V2 includes changes to the scripting language and hosting
+   API, in addition to including more than 240 new
+   cmdlets.^[279][52]^[280][53]
+
+   New features of PowerShell 2.0 include:^[281][54]^[282][55]^[283][56]
+     * PowerShell Remoting: Using [284]WS-Management, PowerShell 2.0
+       allows scripts and cmdlets to be invoked on a remote machine or a
+       large set of remote machines.
+     * Background Jobs: Also called a PSJob, it allows a command sequence
+       (script) or pipeline to be invoked asynchronously. Jobs can be run
+       on the local machine or on multiple remote machines. An interactive
+       cmdlet in a PSJob blocks the execution of the job until user input
+       is provided.
+     * Transactions: Enable cmdlet and developers can perform
+       [285]transactional operations. PowerShell 2.0 includes transaction
+       cmdlets for starting, committing, and rolling back a PSTransaction
+       as well as features to manage and direct the transaction to the
+       participating cmdlet and provider operations. The PowerShell
+       Registry provider supports transactions.
+     * ScriptCmdlets: These are cmdlets written using the PowerShell
+       scripting language. The preferred^[[286]by whom?] name for script
+       cmdlets is now^[[287]when?] Advanced Functions.^[[288]citation
+       needed]
+     * SteppablePipelines: This allows the user to control when the
+       BeginProcessing(), ProcessRecord() and EndProcessing() functions of
+       a cmdlet are called.
+     * Modules: This allows script developers and administrators to
+       organize and partition PowerShell scripts in self-contained,
+       reusable units. Code from a [289]module executes in its own
+       self-contained context and does not affect the state outside the
+       module. Modules can define a restricted runspace environment by
+       using a script. They have a persistent state as well as public and
+       private members.
+     * Data Language: A domain-specific subset of the PowerShell scripting
+       language that allows data definitions to be decoupled from the
+       scripts and allows [290]localized string resources to be imported
+       into the script at runtime (Script Internationalization).
+     * Script Debugging: It allows [291]breakpoints to be set in a
+       PowerShell script or function. Breakpoints can be set on lines,
+       line & columns, commands and read or write access of variables. It
+       includes a set of cmdlets to control the breakpoints via script.
+     * Eventing: This feature allows listening, forwarding, and acting on
+       management and system events. Eventing allows PowerShell hosts to
+       be notified about state changes to their managed entities. It also
+       enables PowerShell scripts to subscribe to ObjectEvents, PSEvents,
+       and WmiEvents and process them synchronously and asynchronously.
+     * Windows PowerShell Integrated Scripting Environment (ISE):
+       PowerShell 2.0 includes a GUI-based PowerShell host that provides
+       integrated debugger, [292]syntax highlighting, tab completion and
+       up to 8 PowerShell Unicode-enabled consoles (Runspaces) in a tabbed
+       UI, as well as the ability to run only the selected parts in a
+       script.
+     * Network File Transfer: Native support for prioritized, throttled,
+       and asynchronous transfer of files between machines using the
+       [293]Background Intelligent Transfer Service (BITS).^[294][57]
+     * New Cmdlets: Including Out-GridView, which displays tabular data in
+       the [295]WPF [296]GridView object.
+     * New Operators: -Split, -Join, and Splatting (@) operators.
+     * Exception Handling with Try-Catch-Finally: Unlike other .NET
+       languages, this allows multiple exception types for a single catch
+       block.
+     * Nestable Here-Strings: PowerShell [297]Here-Strings have been
+       improved and can now nest.^[298][58]
+     * Block Comments: PowerShell 2.0 supports block comments using <# and
+       #> as delimiters.^[299][59]
+     * New APIs: The new APIs range from handing more control over the
+       PowerShell parser and runtime to the host, to creating and managing
+       collection of Runspaces (RunspacePools) as well as the ability to
+       create Restricted Runspaces which only allow a configured subset of
+       PowerShell to be invoked. The new APIs also support participation
+       in a Windows PowerShell managed transaction.
+
+PowerShell 3.0[[300]edit]
+
+   PowerShell 3.0 is integrated with [301]Windows 8 and with [302]Windows
+   Server 2012. Microsoft has also made PowerShell 3.0 available for
+   [303]Windows 7 with Service Pack 1, for [304]Windows Server 2008 with
+   Service Pack 1, and for [305]Windows Server 2008 R2 with Service Pack
+   1.^[306][60]^[307][61]
+
+   PowerShell 3.0 is part of a larger package, Windows Management
+   Framework 3.0 (WMF3), which also contains the WinRM service to support
+   remoting.^[308][61] Microsoft made several [309]Community Technology
+   Preview releases of WMF3. An early community technology preview 2 (CTP
+   2) version of Windows Management Framework 3.0 was released on 2
+   December 2011.^[310][62] Since then, updated versions have been shipped
+   in the Windows 8 and Server 2012 [311]beta and [312]release candidate
+   versions.^[[313]citation needed]
+
+   New features in PowerShell 3.0 include:^[314][61]^[315][63]^:33-34
+     * Scheduled jobs: Jobs can be scheduled to run on a preset time and
+       date.
+     * Session connectivity: Sessions can be disconnected and reconnected.
+       Remote sessions have become more tolerant of temporary network
+       failures.
+     * Improved code writing: [316]Code completion (IntelliSense) and
+       [317]snippets are added. PowerShell ISE allows users to use dialog
+       boxes to fill in parameters for PowerShell cmdlets.
+     * Delegation support: Administrative tasks can be delegated to users
+       who do not have permissions for that type of task, without granting
+       them perpetual additional permissions.
+     * Help update: Help documentations can be updated via Update-Help
+       command.
+     * Automatic module detection: Modules are loaded implicitly whenever
+       a command from that module is invoked. Code completion works for
+       unloaded modules as well.
+     * New commands: Dozens of new modules were added, including
+       functionality to manage disks, volumes, firewalls, network
+       connections and printer management, previously performed via
+       WMI.^[[318]further explanation needed]
+
+PowerShell 4.0[[319]edit]
+
+   PowerShell 4.0 is integrated with [320]Windows 8.1 and with
+   [321]Windows Server 2012 R2. Microsoft has also made PowerShell 4.0
+   available for [322]Windows 7 SP1, [323]Windows Server 2008 R2 SP1 and
+   [324]Windows Server 2012.^[325][64]
+
+   New features in PowerShell 4.0 include:
+     * Desired State Configuration^[326][65]^[327][66]^[328][67]:
+       Declarative language extensions and tools that enable the
+       deployment and management of configuration data for systems using
+       the [329]DMTF management standards and [330]WS-Management Protocol.
+     * New Default Execution Policy: On Windows Servers, the default
+       execution Policy is now RemoteSigned
+     * Save-Help: Help can now be saved for modules that are installed on
+       remote computers.
+     * Enhanced debugging: The debugger now supports debugging workflows,
+       remote script execution and preserving debugging sessions across
+       PowerShell session reconnections.
+     * -PipelineVariable switch: A new ubiquitous parameter to expose the
+       current pipeline object as a variable for programming purposes.
+     * Network diagnostics to manage physical and Hyper-V's virtualized
+       [331]network switches.
+     * Where and ForEach method syntax provides an alternate method of
+       filtering and iterating over objects.
+
+PowerShell 5.0[[332]edit]
+
+   Windows Management Framework (WMF) 5.0 RTM which includes PowerShell
+   5.0 was re-released to web on February 24, 2016, following an initial
+   release with a severe bug.^[333][68] Key features include OneGet
+   PowerShell cmdlets to support [334]Chocolatey's repository-based
+   [335]package management^[336][69] and extending support for switch
+   management to [337]layer 2 network switches.^[338][70]
+
+   New features in PowerShell 5.0 include:
+     * PowerShell class definitions (properties, methods)
+     * PowerShell .NET Enumerations
+     * Debugging for PowerShell Runspaces in remote processes
+     * Debugging for PowerShell Background Jobs
+     * Desired State Configuration (DSC) Local Configuration Manager (LCM)
+       version 2.0
+     * DSC partial configurations
+     * DSC Local Configuration Manager meta-configurations
+     * Authoring of DSC resources using PowerShell classes
+
+   PowerShell 5.1 was released on August 2, 2016, in the [339]Windows 10
+   Anniversary Update.^[340][71] PackageManagement now supports proxies,
+   PSReadLine now has ViMode support, and two new cmdlets were added:
+   Get-TimeZone and Set-TimeZone. The LocalAccounts module allows for
+   adding/removing local user accounts.^[341][72]
+
+Comparison of cmdlets with similar commands[[342]edit]
+
+   The following table contains a selection of the cmdlets that ship with
+   PowerShell, noting similar commands in other well-known command-line
+   interpreters. Many of these similar commands come out-of-the-box
+   defined as aliases within PowerShell, making it easy for people
+   familiar with other common shells to start working.
+   PowerShell (Cmdlet) PowerShell (Alias) [343]CMD.EXE / [344]COMMAND.COM
+   [345]Unix shell Description
+   Get-ChildItem gci, dir, ls [346]dir [347]ls List all files /
+   directories in the (current) directory
+   Test-Connection^[348][a] N/A [349]ping [350]ping Sends ICMP echo
+   requests to specified machine from the current machine, or instructs
+   another machine to do so
+   Get-Content gc, type, cat [351]type [352]cat Get the content of a file
+   Get-Command gcm [353]help [354]type, [355]which, [356]compgen List
+   available commands
+   Get-Help help, man [357]help [358]apropos, [359]man Help on commands
+   Clear-Host cls, clear [360]cls [361]clear Clear the screen^[362][b]
+   Copy-Item cpi, copy, cp [363]copy [364]cp Copy one or several files / a
+   whole directory tree
+   Move-Item mi, move, mv [365]move [366]mv Move a file / a directory to a
+   new location
+   Remove-Item ri, del, erase, rmdir, rd, rm [367]del, [368]erase,
+   [369]rmdir, [370]rd [371]rm, rmdir Delete a file / a directory
+   Rename-Item rni, ren, mv [372]ren, [373]rename [374]mv Rename a file /
+   a directory
+   Get-Location gl, cd, pwd [375]cd [376]pwd Display the current
+   directory/present working directory.
+   Pop-Location popd [377]popd popd Change the current directory to the
+   directory most recently pushed onto the stack
+   Push-Location pushd [378]pushd pushd Push the current directory onto
+   the stack
+   Set-Location sl, cd, chdir [379]cd, [380]chdir cd Change the current
+   directory
+   Tee-Object tee N/A [381]tee Pipe input to a file or variable, then pass
+   the input along the pipeline
+   Write-Output echo, write [382]echo echo Print strings, variables etc.
+   to standard output
+   Get-Process gps, ps tlist,^[383][c] tasklist^[384][d] [385]ps List all
+   currently running processes
+   Stop-Process spps, kill [386]kill,^[387][c] taskkill^[388][d]
+   kill^[389][e] Stop a running process
+   Select-String sls [390]find, [391]findstr [392]grep Print lines
+   matching a pattern
+   Set-Variable sv, set [393]set env, export, set, setenv Set the value of
+   a variable / create a variable
+   Invoke-WebRequest iwr, curl, wget N/A [394]wget, [395]curl Gets content
+   from a web page on the Internet
+
+   Notes
+    1. [396]^ While the external [397]ping command remains available to
+       PowerShell, Test-Connection's output is a structured [398]object
+       that can be programmatically inspected.^[399][73]
+    2. [400]^ Clear-Host is implemented as a predefined PowerShell
+       function.
+    3. ^ [401]^a [402]^b Available in Windows NT4, Windows 98 Resource
+       Kit, Windows 2000 Support Tools
+    4. ^ [403]^a [404]^b Available in Windows XP Professional Edition and
+       later
+    5. [405]^ Also used in UNIX to send a process any [406]signal, the
+       "Terminate" signal is merely the default
+
+File extensions[[407]edit]
+
+     * PS1 - Windows PowerShell shell script^[408][74]
+     * PSD1 - Windows PowerShell data file (for Version 2)^[409][75]
+     * PSM1 - Windows PowerShell module file (for Version 2)^[410][76]
+     * PS1XML - Windows PowerShell format and type
+       definitions^[411][35]^[412][77]
+     * CLIXML - Windows PowerShell serialized data^[413][78]
+     * PSC1 - Windows PowerShell console file^[414][79]
+     * PSSC - Windows PowerShell Session Configuration file^[415][80]
+
+Application support[[416]edit]
+
+Snap-ins and hosts[[417]edit]
+
+   Application Version Cmdlets Provider Management GUI
+   [418]Exchange Server 2007 402 Yes Yes
+   [419]Windows Server [420]2008 Yes Yes No
+   [421]Microsoft SQL Server 2008 Yes Yes No
+   [422]Microsoft SharePoint 2010 Yes Yes No
+   [423]System Center Configuration Manager 2012 R2 400+ Yes No
+   [424]System Center Operations Manager 2007 74 Yes No
+   [425]System Center Virtual Machine Manager 2007 Yes Yes Yes
+   [426]System Center Data Protection Manager 2007 Yes No No
+   [427]Windows Compute Cluster Server 2007 Yes Yes No
+   Microsoft Transporter Suite for [428]Lotus Domino^[429][81] 08.02.0012
+   47 No No
+   Microsoft PowerTools for [430]Open XML^[431][82] 1.0 33 No No
+   [432]IBM WebSphere MQ^[433][83] 6.0.2.2 44 No No
+   [434]Quest Management Shell for Active Directory^[435][84] 1.6 95 No No
+   Special Operations Software Specops Command^[436][85] 1.0 Yes No Yes
+   [437]VMware vSphere PowerCLI^[438][86] 6.3 R1 455 Yes Yes
+   [439]Internet Information Services^[440][87] 7.0 54 Yes No
+   [441]Windows 7 Troubleshooting Center^[442][88] 6.1 Yes No Yes
+   [443]Microsoft Deployment Toolkit^[444][89] 2010 Yes Yes Yes
+   [445]NetApp PowerShell Toolkit^[446][90]^[447][91] 4.2 2000+ Yes Yes
+   [448]JAMS Scheduler - Job Access & Management System^[449][92] 5.0 52
+   Yes Yes
+   [450]UIAutomation^[451][93] 0.8 432 No No
+   [452]Dell Equallogic^[453][94] 3.5 55 No No
+   [454]LOGINventory^[455][95] 5.8 Yes Yes Yes
+   [456]SePSX^[457][96] 0.4.1 39 No No
+
+Alternative implementation[[458]edit]
+
+   A project named Pash (the name is a pun on the well-known "[459]bash"
+   Unix shell^[460][97]) has been an [461]open source and
+   [462]cross-platform re-implementation of PowerShell via the [463]Mono
+   framework. Pash was created by Igor Moochnick, written in [464]C# and
+   was released under the [465]GNU General Public License. Pash
+   development stalled in 2008, but was restarted in
+   2012.^[466][97]^[467][98]
+
+See also[[468]edit]
+
+     * [469]Common Information Model
+     * [470]Comparison of command shells
+     * [471]Comparison of programming languages
+     * [472]Web-Based Enterprise Management
+     * [473]Windows Script Host
+
+References[[474]edit]
+
+    1. [475]^
+       [476]https://github.com/PowerShell/PowerShell/blob/master/LICENSE.t
+       xt
+    2. [477]^ Snover, Jeffrey (May 25, 2008). [478]"PowerShell and WPF:
+       WTF". Windows PowerShell Blog. Microsoft.
+    3. ^ [479]^a [480]^b Bright, Peter (18 August 2016). [481]"PowerShell
+       is Microsoft's latest open source release, coming to Linux, OS X".
+       [482]Ars Technica. [483]Condé Nast.
+    4. ^ [484]^a [485]^b [486]^c [487]^d [488]^e [489]"How Windows
+       PowerShell works". [490]Microsoft Developer Network.
+       [491]Microsoft. Retrieved 2007-11-27.
+    5. [492]^ Truher, Jim (December 2007). [493]"Extend Windows PowerShell
+       With Custom Commands". [494]MSDN Magazine. Microsoft. Archived from
+       [495]the original on 6 October 2008.
+    6. [496]^ Lowe, Scott (January 4, 2007). [497]"Exchange 2007: Get used
+       to the command line". [498]TechRepublic. [499]CBS Interactive.
+    7. [500]^ Snover, Jeffrey (November 13, 2007). [501]"SQL Server
+       Support for PowerShell!". Windows PowerShell Blog (blog posting).
+       Microsoft.
+    8. [502]^ Dragan, Richard V. (April 23, 2003). [503]"Windows Server
+       2003 Delivers Improvements All Around". Reviews. [504]PC Magazine.
+       [505]Ziff Davis. "A standout feature here is that virtually all
+       admin utilities now work from the command line (and most are
+       available through telnet)."
+    9. [506]^ Snover, Jeffrey (August 2, 2002). [507]"Monad Manifesto -
+       the Origin of Windows PowerShell". Windows PowerShell Blog (blog
+       posting). [508]Microsoft.
+   10. [509]^ [510]"Windows PowerShell (Monad) Has Arrived". Windows
+       PowerShell Blog. [511]Microsoft. April 25, 2006.
+   11. [512]^ Snover, Jeffrey (November 15, 2006). [513]"Windows
+       PowerShell & Windows Vista". Windows PowerShell Blog (blog
+       posting). [514]Microsoft.
+   12. [515]^ [516]"Windows Management Framework (Windows PowerShell 2.0,
+       WinRM 2.0, and BITS 4.0)". Support. [517]Microsoft. September 30,
+       2013. Archived from [518]the original on October 13, 2013.
+   13. [519]^
+       [520]https://blogs.technet.microsoft.com/heyscriptingguy/2015/12/14
+       /what-is-pester-and-why-should-i-care/
+   14. [521]^ Snover, Jeffrey (18 August 2016). [522]"PowerShell is open
+       sourced and is available on Linux". Microsoft Azure Blog.
+       [523]Microsoft.
+   15. [524]^ [525]"PowerShell/PowerShell". GitHub. Retrieved 2016-08-18.
+   16. [526]^ Hansen, Kenneth; Calvo, Angel (August 18, 2016).
+       [527]"PowerShell on Linux and Open Source!". Windows PowerShell
+       Blog. [528]Microsoft.
+   17. [529]^ [530]Foley, Mary Jo (August 18, 2016). [531]"Microsoft open
+       sources PowerShell; brings it to Linux and Mac OS X". [532]ZDNet.
+       [533]CBS Interactive.
+   18. [534]^ Payette, Bruce (2007). [535]Windows PowerShell in Action.
+       Manning Pubs Co Series. Manning. p. 27.
+       [536]ISBN [537]9781932394900. Retrieved 2016-07-22. "The core
+       PowerShell language is based on the POSIX 1003.2 grammar for the
+       [538]Korn shell."
+   19. [539]^ [540]"about_Command_Precedence". [541]TechNet.
+       [542]Microsoft. May 8, 2014.
+   20. [543]^ [544]"Windows PowerShell Extended Type System". Retrieved
+       2007-11-28.
+   21. ^ [545]^a [546]^b [547]^c [548]"Windows PowerShell Cmdlets".
+       Retrieved 2007-11-28.
+   22. [549]^ [550]"Creating Your First Cmdlet". Retrieved 2007-11-28.
+   23. [551]^ [552]"Get-Verb". [553]TechNet. [554]Microsoft. May 8, 2014.
+   24. [555]^ [556]"Cmdlet Overview". [557]MSDN. [558]Microsoft. May 8,
+       2014.
+   25. [559]^ [560]"Adding parameters That Process Command Line Input".
+       Retrieved 2007-11-28.
+   26. [561]^ [562]"Adding parameters That Process Pipeline Input".
+       Retrieved 2007-11-28.
+   27. [563]^ [564]"Windows PowerShell Providers". Retrieved 2010-10-14.
+   28. [565]^ [566]"Windows PowerShell Owner's Manual: Piping and the
+       Pipeline in Windows PowerShell". [567]TechNet. [568]Microsoft.
+       Retrieved 2011-09-27.
+   29. [569]^ Jones, Don (2008). [570]"Windows PowerShell - Rethinking the
+       Pipeline". [571]Microsoft TechNet. [572]Microsoft. Retrieved
+       2007-11-28.
+   30. [573]^ [574]"Windows PowerShell Object Concepts". Archived from
+       [575]the original on August 19, 2007. Retrieved 2007-11-28.
+   31. [576]^ [577]"How PowerShell Formatting and Outputting REALLY
+       works". Retrieved 2007-11-28.
+   32. [578]^ [579]"More - How does PowerShell formatting really work?".
+       Retrieved 2007-11-28.
+   33. [580]^ [581]"about_Pipelines". [582]TechNet. [583]Microsoft. May 8,
+       2014.
+   34. [584]^ [585]"about_Objects". [586]TechNet. [587]Microsoft. May 8,
+       2014.
+   35. ^ [588]^a [589]^b [590]"about_Format.ps1xml". [591]TechNet.
+       [592]Microsoft. May 8, 2014.
+   36. [593]^ [594]"Anonymous Functions and Code Blocks in PowerShell".
+       Retrieved 2012-01-21.
+   37. [595]^ [596]"Introduction to Windows PowerShell's Variables".
+       Retrieved 2007-11-28.
+   38. [597]^ [598]"Byte Conversion". Windows PowerShell Tip of the Week.
+       Retrieved 15 November 2013.
+   39. [599]^ Ravikanth (20 May 2013). [600]"Converting to size units (KB,
+       MB,GB,TB, and PB) without using PowerShell multipliers". PowerShell
+       Magazine.
+   40. ^ [601]^a [602]^b [603]^c [604]"about_Functions". [605]Microsoft
+       TechNet. [606]Microsoft. 17 October 2013. Retrieved 15 November
+       2013.
+   41. ^ [607]^a [608]^b [609]"Lightweight Testing with Windows
+       PowerShell". Retrieved 2007-11-28.
+   42. [610]^ Angelopoulos, Alex; Karen, Bemowski (4 December 2007).
+       [611]"PowerShell Got Smart About Smart Quotes". [612]Windows IT
+       Pro. [613]Penton Media. Retrieved 15 November 2013.
+   43. [614]^ [615]"Trap [Exception] { "In PowerShell" }". Retrieved
+       2007-11-28.
+   44. [616]^ [617]"Running Windows PowerShell Scripts". Retrieved
+       2007-11-28.
+   45. [618]^ [619]"about_Signing". [620]Microsoft TechNet.
+       [621]Microsoft. 17 October 2013. Retrieved 15 November 2013.
+   46. [622]^ [623]"Scientific notation in PowerShell". 14 Dec 2006.
+   47. [624]^
+       [625]https://msdn.microsoft.com/en-us/powershell/dsc/overview
+   48. [626]^ Chung, Leonard; Snover, Jeffrey; Kumaravel, Arul (14
+       November 2006). [627]"It's a Wrap! Windows PowerShell 1.0
+       Released!". Windows PowerShell Blog. [628]Microsoft.
+   49. [629]^ [630]"PowerShell will be installed by default on Windows
+       Server 08 R2 (WS08R2) and Windows 7 (W7)!". Windows PowerShell
+       Blog. [631]Microsoft. 2008-10-28. Retrieved 2011-09-27.
+   50. [632]^ [633]"Windows Management Framework is here!". 2009-10-27.
+       Retrieved 2009-10-30.
+   51. [634]^ [635]"Microsoft Support Knowledge Base: Windows Management
+       Framework (Windows PowerShell 2.0, WinRM 2.0, and BITS 4.0)".
+       Support.microsoft.com. 2011-09-23. Retrieved 2011-09-27.
+   52. [636]^ [637]"574 Reasons Why We Are So Proud and Optimistic About
+       W7 and WS08R2". Windows PowerShell Blog. [638]Microsoft.
+       2008-10-29. Retrieved 2011-09-27.
+   53. [639]^ Snover, Jeffrey (2008). [640]"PowerShell: Creating
+       Manageable Web Services". Archived from [641]the original on
+       October 13, 2008. Retrieved July 19, 2015.
+   54. [642]^ [643]"What's New in CTP of PowerShell 2.0". Retrieved
+       2007-11-28.
+   55. [644]^ [645]"Windows PowerShell V2 Community Technology Preview 2
+       (CTP2) - releaseNotes". Archived from [646]the original on May 6,
+       2008. Retrieved 2008-05-05.
+   56. [647]^ [648]"Differences between PowerShell 1.0 and PowerShell
+       2.0". Retrieved 2010-06-26.
+   57. [649]^ [650]"GoGrid Snap-in - Managing Cloud Services with
+       PowerShell". Windows PowerShell Blog. [651]Microsoft. 2008-10-14.
+       Retrieved 2011-09-27.
+   58. [652]^ [653]"Emit-XML". Windows PowerShell Blog. [654]Microsoft.
+       2008-10-17. Retrieved 2011-09-27.
+   59. [655]^ [656]"Block Comments in V2". Windows PowerShell Blog.
+       [657]Microsoft. 2008-06-14. Retrieved 2011-09-27.
+   60. [658]^ Lee, Thomas (13 August 2012). [659]"PowerShell Version 3 is
+       RTM!". Under The Stairs. Retrieved 2012-08-13.
+   61. ^ [660]^a [661]^b [662]^c [663]"Windows Management Framework 3.0".
+       Download Center. [664]Microsoft. 4 September 2012. Retrieved
+       2012-11-08.
+   62. [665]^ [666]"Windows Management Framework 3.0 Community Technology
+       Preview (CTP) #2 Available for Download". Windows PowerShell Blog.
+       [667]Microsoft. 2 December 2011.
+   63. [668]^ Honeycutt, Jerry (2012). Woolley, Valerie, ed.
+       [669]Introducing Windows 8: An Overview for IT Professionals.
+       Redmond, WA: [670]Microsoft Press.
+       [671]ISBN [672]978-0-7356-7050-1.
+   64. [673]^ [674]"Windows Management Framework 4.0 is now available".
+       [675]Microsoft. 24 October 2013. Retrieved 4 November 2013.
+   65. [676]^ Levy, Shay (25 June 2013). [677]"New Features in Windows
+       PowerShell 4.0". PowerShell Magazine. Retrieved 26 June 2013.
+   66. [678]^ [679]"Desired State Configuration in Windows Server 2012 R2
+       PowerShell". [680]Channel 9. [681]Microsoft. 3 June 2013. Retrieved
+       26 June 2013.
+   67. [682]^ Hall, Adrian (7 June 2013). [683]"Thoughts from Microsoft
+       TechEd North America". Blogs: Tips & Tricks. [684]Splunk. Retrieved
+       26 June 2013.
+   68. [685]^ [686]"Windows Management Framework (WMF) 5.0 RTM packages
+       has been republished". Windows PowerShell Blog. [687]Microsoft.
+       February 24, 2016.
+   69. [688]^ [689]"Q and A". GitHub. Retrieved 21 April 2015.
+   70. [690]^ Snover, Jeffrey (2014-04-03). [691]"Windows Management
+       Framework V5 Preview". blogs.technet.com. [692]Microsoft. Retrieved
+       2015-04-21.
+   71. [693]^
+       [694]http://www.powershellmagazine.com/2016/08/02/pstip-new-powersh
+       ell-commands-in-windows-10-anniversary-update/
+   72. [695]^
+       [696]https://technet.microsoft.com/en-us/library/mt651681.aspx
+   73. [697]^ [698]"Test-Connection". PowerShell documentations.
+       [699]Microsoft. 9 August 2015.
+   74. [700]^ [701]"about_Script". [702]TechNet. [703]Microsoft. May 8,
+       2014.
+   75. [704]^ [705]"Import-LocalizedData". [706]TechNet. [707]Microsoft.
+       May 8, 2014.
+   76. [708]^ [709]"about_Modules". [710]TechNet. [711]Microsoft. May 8,
+       2014.
+   77. [712]^ [713]"about_types.ps1xml". [714]TechNet. [715]Microsoft. May
+       8, 2014.
+   78. [716]^ [717]"Export-Clixml". [718]TechNet. [719]Microsoft. May 8,
+       2014.
+   79. [720]^ [721]"Export-Console". [722]TechNet. [723]Microsoft. May 8,
+       2014.
+   80. [724]^ [725]"about_Session_Configuration_Files". [726]TechNet.
+       [727]Microsoft. May 8, 2014.
+   81. [728]^ [729]"Microsoft Transporter Suite for Lotus Domino".
+       Retrieved 2008-03-07.
+   82. [730]^ [731]"PowerTools for Open XML". Retrieved 2008-06-20.
+   83. [732]^ [733]"MO74: WebSphere MQ - Windows PowerShell Library".
+       Retrieved 2007-12-05.
+   84. [734]^ [735]"PowerShell Commands for Active Directory by Quest
+       Software". Retrieved 2008-07-02.
+   85. [736]^ [737]"PowerShell Remoting through Group Policy". Retrieved
+       2007-12-07.
+   86. [738]^ [739]"VMware vSphere PowerCLI". Retrieved 2014-09-09.
+   87. [740]^ [741]"Windows PowerShell : IIS7 PowerShell Provider Tech
+       Preview 2". Retrieved 2008-07-03.
+   88. [742]^ [743]"Kudos to the Win7 Diagnostics Team". Retrieved
+       2009-06-15.
+   89. [744]^ Michael, Niehaus (10 Jul 2009). [745]"MDT 2010 New Feature
+       #16: PowerShell support". Retrieved 2014-10-27.
+   90. [746]^ [747]"Kudos to NetApp for Data ONTAP PowerShell ToolKit".
+       Retrieved 2010-06-15.
+   91. [748]^ [749]"PowerShell Toolkit 4.2 Announcement". Retrieved
+       2016-09-07.
+   92. [750]^ [751]"Heterogeneous Job Scheduling With PowerShell".
+       Retrieved 2010-09-15.
+   93. [752]^ [753]"UIAutomation PowerShell Extensions". Retrieved
+       2012-02-16.
+   94. [754]^ [755]"EqualLogic HIT-ME with PowerShell". Retrieved
+       2012-03-09.
+   95. [756]^ [757]de:LOGINventory
+   96. [758]^ [759]"Selenium PowerShell eXtensions". Retrieved
+       2012-08-20.
+   97. ^ [760]^a [761]^b [762]"Pash". [763]SourceForge. [764]Dice
+       Holdings, Inc. Retrieved 2011-09-27.
+   98. [765]^ [766]"Pash Project". Retrieved 2013-04-10.
+
+Further reading[[767]edit]
+
+     * Oakley, Andy (2005). Monad (AKA PowerShell). [768]O'Reilly Media.
+       [769]ISBN [770]0-596-10009-4.
+     * Holmes, Lee (2006). Windows PowerShell Quick Reference.
+       [771]O'Reilly Media. [772]ISBN [773]0-596-52813-2.
+     * Holmes, Lee (2007). Windows PowerShell Cookbook. [774]O'Reilly
+       Media. [775]ISBN [776]0-596-52849-3.
+     * Watt, Andrew (2007). Professional Windows PowerShell. [777]Wrox
+       Press. [778]ISBN [779]0-471-94693-1.
+     * Kumaravel, Arul; White, Jon; Naixin Li, Michael; Happell, Scott;
+       Xie, Guohui; Vutukuri, Krishna C. (2008). Professional Windows
+       PowerShell Programming: Snapins, Cmdlets, Hosts and Providers.
+       [780]Wrox Press. [781]ISBN [782]0-470-17393-9.
+     * Kopczynski, Tyson; Handley, Pete; Shaw, Marco (2009). Windows
+       PowerShell Unleashed (2nd ed.). [783]Pearson Education.
+       [784]ISBN [785]978-0-672-32988-3.
+     * Jones, Don; Hicks, Jeffery (2010). Windows PowerShell 2.0: TFM (3rd
+       ed.). Sapien Technologies. [786]ISBN [787]978-0-9821314-2-8.
+     * Finke, Douglas (2012). Windows PowerShell for Developers.
+       [788]O'Reilly Media. [789]ISBN [790]1-4493-2270-0.
+     * Wilson, Ed (2013). Windows PowerShell 3.0 Step by Step.
+       [791]Microsoft Press. [792]ISBN [793]978-0-7356-6339-8.
+     * Wilson, Ed (2014). Windows PowerShell Best Practices.
+       [794]Microsoft Press. [795]ISBN [796]978-0-7356-6649-8.
+
+External links[[797]edit]
+
+   Wikiversity has learning materials about [798]Windows PowerShell
+     * [799]Official website
+     * [800]PowerShell on [801]GitHub
+     * [802]Windows PowerShell Survival Guide on [803]TechNet Wiki
+
+     * [804]v
+     * [805]t
+     * [806]e
+
+   [807]Microsoft Windows components
+   Management
+   tools
+     * [808]CMD.EXE
+     * [809]Control Panel
+          + [810]Applets
+     * [811]Device Manager
+     * [812]Disk Cleanup
+     * [813]Disk Defragmenter
+     * [814]Driver Verifier
+     * [815]Event Viewer
+     * [816]IExpress
+     * [817]Management Console
+     * [818]Netsh
+     * [819]Recovery Console
+     * [820]Resource Monitor
+     * [821]ScanDisk
+     * [822]Settings app
+     * [823]Sysprep
+     * [824]System Configuration
+     * [825]System File Checker
+     * [826]System Policy Editor
+     * [827]System Restore
+     * [828]Task Manager
+     * [829]Windows Error Reporting
+     * [830]Windows Installer
+     * PowerShell
+     * [831]Windows Update
+          + [832]Windows Insider
+     * [833]WinRE
+     * [834]WMI
+
+   [835]Windows logo - 2012 (dark blue).svg
+   [836]Apps
+     * [837]Calculator
+     * [838]Calendar
+     * [839]Character Map
+     * [840]Cortana
+     * [841]DVD Player
+     * [842]Edge
+     * [843]Fax and Scan
+     * [844]Groove
+     * [845]Magnifier
+     * [846]Mail
+     * [847]Maps
+     * [848]MSN apps (News, Weather, Sports, Money)
+     * [849]Movie Maker
+     * [850]Movies & TV
+     * [851]Mobility Center
+     * [852]Narrator
+     * [853]Notepad
+     * [854]OneDrive
+     * [855]OneNote
+     * [856]Paint
+     * [857]People
+     * [858]Photo Viewer
+     * [859]Photos
+     * [860]Remote Assistance
+     * [861]Snipping Tool
+     * [862]Solitaire Collection
+     * [863]Sound Recorder
+     * [864]Speech Recognition
+     * [865]Skype
+     * [866]Sticky Notes
+     * [867]Store
+     * [868]Wallet
+     * [869]Windows To Go
+     * [870]WordPad
+     * [871]Xbox
+
+   [872]Shell
+     * [873]Action Center
+     * [874]Aero
+     * [875]AutoPlay
+     * [876]AutoRun
+     * [877]ClearType
+     * [878]Explorer
+     * [879]Search
+          + [880]Indexing Service
+          + [881]IFilter
+          + [882]Saved search
+          + [883]Namespace
+          + [884]Special folder
+     * [885]Start menu
+     * [886]Taskbar
+     * [887]Task View
+     * [888]Windows XP visual styles
+
+   [889]Services
+     * [890]Service Control Manager
+     * [891]BITS
+     * [892]CLFS
+     * [893]Multimedia Class Scheduler
+     * [894]Shadow Copy
+     * [895]Task Scheduler
+     * [896]Error Reporting
+     * [897]Wireless Zero Configuration
+
+   [898]File systems
+     * [899]CDFS
+     * [900]DFS
+     * [901]exFAT
+     * [902]IFS
+     * [903]FAT
+     * [904]NTFS
+          + [905]Hard link
+          + [906]Junction point
+          + [907]Mount Point
+          + [908]Reparse point
+          + [909]Symbolic link
+          + [910]TxF
+          + [911]EFS
+     * [912]ReFS
+     * [913]UDF
+     * [914]WinFS
+
+   [915]Server
+     * [916]Domains
+     * [917]Active Directory
+     * [918]DNS
+     * [919]Group Policy
+     * [920]Roaming user profiles
+     * [921]Folder redirection
+     * [922]Distributed Transaction Coordinator
+     * [923]MSMQ
+     * [924]Windows Media Services
+     * [925]Rights Management Services
+     * [926]IIS
+     * [927]Remote Desktop Services
+     * [928]WSUS
+     * [929]SharePoint
+     * [930]Network Access Protection
+     * [931]PWS
+     * [932]DFS Replication
+     * [933]Remote Differential Compression
+     * [934]Print Services for UNIX
+     * [935]Remote Installation Services
+     * [936]Windows Deployment Services
+     * [937]System Resource Manager
+     * [938]Hyper-V
+     * [939]Server Core
+
+   [940]Architecture
+     * [941]Architecture of Windows NT
+     * [942]Startup process
+     * [943]CSRSS
+     * [944]Desktop Window Manager
+     * [945]Portable Executable
+          + [946]EXE
+          + [947]DLL
+     * [948]Enhanced Write Filter
+     * [949]Graphics Device Interface
+     * [950]hal.dll
+     * [951]I/O request packet
+     * [952]Imaging Format
+     * [953]Kernel Transaction Manager
+     * [954]Library files
+     * [955]Logical Disk Manager
+     * [956]LSASS
+     * [957]MinWin
+     * [958]NTLDR
+     * [959]Ntoskrnl.exe
+     * [960]Object Manager
+     * [961]Open XML Paper Specification
+     * [962]Registry
+     * [963]Resource Protection
+     * [964]Security Account Manager
+     * [965]Server Message Block
+     * [966]Shadow Copy
+     * [967]SMSS
+     * [968]System Idle Process
+     * [969]USER
+     * [970]WHEA
+     * [971]Win32 console
+     * [972]Winlogon
+
+   Security
+     * [973]Security and Maintenance
+     * [974]BitLocker
+     * [975]Data Execution Prevention
+     * [976]Family Safety
+     * [977]Kernel Patch Protection
+     * [978]Mandatory Integrity Control
+     * [979]Protected Media Path
+     * [980]User Account Control
+     * [981]User Interface Privilege Isolation
+     * [982]Windows Defender
+     * [983]Windows Firewall
+
+   Compatibility
+     * [984]COMMAND.COM
+     * [985]Virtual DOS machine
+     * [986]Windows on Windows
+     * [987]WoW64
+     * [988]Windows Subsystem for Linux
+
+   [989]API
+     * [990]Active Scripting
+          + [991]WSH
+          + [992]VBScript
+          + [993]JScript
+     * [994]COM
+          + [995]ActiveX
+          + [996]ActiveX Document
+          + [997]COM Structured storage
+          + [998]DCOM
+          + [999]OLE
+          + [1000]OLE Automation
+          + [1001]Transaction Server
+     * [1002]DirectX
+     * [1003].NET Framework
+     * [1004]Windows Holographic
+     * [1005]Windows Runtime
+     * [1006]Universal Windows Platform
+
+   Discontinued
+   [1007]Games
+     * [1008]3D Pinball
+     * [1009]Chess Titans
+     * [1010]FreeCell
+     * [1011]Hearts
+     * [1012]Hover!
+     * [1013]InkBall
+     * [1014]Hold 'Em
+     * [1015]Mahjong Titans
+     * [1016]Minesweeper
+     * [1017]Purble Place
+     * [1018]Reversi
+     * [1019]Solitaire
+     * [1020]Spider Solitaire
+     * [1021]Tinker
+
+   [1022]Apps
+     * [1023]ActiveMovie
+     * [1024]Anytime Upgrade
+     * [1025]Address Book
+     * [1026]Backup and Restore
+     * [1027]Cardfile
+     * [1028]CardSpace
+     * [1029]Contacts
+     * [1030]Desktop Gadgets
+     * [1031]Diagnostics
+     * [1032]DriveSpace
+     * [1033]DVD Maker
+     * [1034]Fax
+     * [1035]File Manager
+     * [1036]Food & Drink
+     * [1037]Help and Support Center
+     * [1038]Health & Fitness
+     * [1039]HyperTerminal
+     * [1040]Internet Explorer
+     * [1041]Journal
+     * [1042]Internet Mail and News
+     * [1043]Media Center
+     * [1044]Media Player
+     * [1045]Meeting Space
+     * [1046]Messaging
+     * [1047]Messenger
+     * [1048]Mobile Device Center
+     * [1049]NetMeeting
+     * [1050]NTBackup
+     * [1051]Outlook Express
+     * [1052]Travel
+     * [1053]Photo Gallery
+     * [1054]Program Manager
+     * [1055]Windows Easy Transfer
+     * [1056]WinHelp
+     * [1057]Write
+
+   Others
+     * [1058]File Protection
+     * [1059]Media Control Interface
+     * [1060]Next-Generation Secure Computing Base
+     * [1061]POSIX subsystem
+     * [1062]Interix
+     * [1063]Video for Windows
+     * [1064]Windows SideShow
+     * [1065]Windows Services for UNIX
+     * [1066]Windows System Assessment Tool
+
+     * [1067]v
+     * [1068]t
+     * [1069]e
+
+   [1070]Windows [1071]command-line programs and [1072]shell builtins
+     * [1073]COMMAND.COM
+     * [1074]Command Prompt
+     * Windows PowerShell
+     * [1075]Recovery Console
+
+   File system navigation
+     * [1076]cd (chdir)
+     * [1077]dir
+     * [1078]popd
+     * [1079]pushd
+     * [1080]tree
+
+   File management
+     * [1081]attrib
+     * [1082]cacls
+     * [1083]cipher
+     * [1084]compact
+     * [1085]copy
+     * [1086]del (erase)
+     * [1087]deltree
+     * [1088]expand
+     * [1089]icacls
+     * [1090]makecab
+     * [1091]md (mkdir)
+     * [1092]move
+     * [1093]rd (rmdir)
+     * [1094]recover
+     * [1095]ren (rename)
+     * [1096]replace
+     * [1097]rmdir
+     * [1098]robocopy
+     * [1099]xcopy
+
+   Disk management
+     * [1100]chkdsk
+     * [1101]convert
+     * [1102]defrag
+     * [1103]diskcomp
+     * [1104]diskcopy
+     * [1105]diskpart
+     * [1106]fdisk
+     * [1107]format
+     * [1108]label
+     * [1109]subst
+     * [1110]scandisk
+     * [1111]sys
+     * [1112]vol
+     * [1113]vssadmin
+
+   Processes
+     * [1114]exit
+     * [1115]kill
+     * [1116]powercfg
+     * [1117]runas
+     * [1118]sc
+     * [1119]shutdown
+     * [1120]start
+     * [1121]taskkill
+     * [1122]tasklist
+
+   Registry
+     * [1123]assoc
+     * [1124]ftype
+     * [1125]reg
+     * [1126]regini
+     * [1127]regsvr32
+
+   User environment
+     * [1128]date
+     * [1129]mode
+     * [1130]path
+     * [1131]set
+     * [1132]setx
+     * [1133]time
+     * [1134]title
+     * [1135]ver
+     * [1136]whoami
+
+   File contents
+     * [1137]comp
+     * [1138]edit
+     * [1139]edlin
+     * [1140]fc
+     * [1141]find
+     * [1142]findstr
+     * [1143]print
+     * [1144]type
+
+   [1145]Scripting
+     * [1146]choice
+     * [1147]clip
+     * [1148]cscript
+     * [1149]doskey
+     * [1150]echo
+     * [1151]for
+     * [1152]goto
+     * [1153]if
+     * [1154]more
+     * [1155]pause
+     * [1156]prompt
+     * [1157]rem
+
+   Networking
+     * [1158]arp
+     * [1159]getmac
+     * [1160]hostname
+     * [1161]ipconfig
+     * [1162]net use
+     * [1163]netsh
+     * [1164]netstat
+     * [1165]nslookup
+     * [1166]PathPing
+     * [1167]ping
+     * [1168]route
+     * [1169]tracert
+
+   Maintenance and care
+     * [1170]driverquery
+     * [1171]msiexec
+     * [1172]ntbackup
+     * [1173]sfc
+     * [1174]systeminfo
+     * [1175]w32tm
+     * [1176]WBAdmin
+     * [1177]winsat
+     * [1178]wmic
+
+   Boot management
+     * [1179]bcdedit
+     * [1180]bootcfg
+     * [1181]fixboot
+     * [1182]fixmbr
+
+   [1183]Software development
+     * [1184]debug
+     * [1185]exe2bin
+     * [1186]QBasic
+
+         Miscellaneous
+     * [1187]cls
+     * [1188]help
+
+     * [1189]List of DOS commands
+     * [1190]Environment variables
+
+     * [1191]v
+     * [1192]t
+     * [1193]e
+
+   [1194]Common Language Infrastructure
+   Architecture
+     * [1195]Application domain
+     * [1196]Code Access Security
+     * [1197]Common Intermediate Language (CIL)
+          + [1198]CIL instructions
+     * [1199]Common Type System (CTS)
+     * [1200]Platform Invocation Services (P/Invoke)
+     * [1201]Virtual Execution System (VES)
+
+   Components
+     * [1202]Assembly
+     * [1203]Delegate
+     * [1204]Global Assembly Cache (GAC)
+     * [1205]Manifest
+     * [1206]Metadata
+
+   [1207]Standard
+   Libraries
+   [1208]Kernel Profile
+     * [1209]Base Class Library (BCL)
+     * [1210]Runtime Infrastructure Library
+
+   [1211]Compact Profile
+     * [1212]Network Library
+     * [1213]Reflection Library
+     * [1214]XML Library
+
+     * [1215]Extended Array Library
+     * [1216]Extended Numerics Library
+     * [1217]Parallel Library
+     * [1218]Vararg Library
+
+   Implementations
+   Microsoft
+     * [1219].NET Framework
+     * [1220].NET Compact Framework
+     * [1221].NET Micro Framework
+     * [1222]Shared Source Common Language Infrastructure
+
+   Other
+     * [1223].NET Core
+     * [1224]Mono
+     * [1225]Portable.NET
+
+   [1226]Languages
+   Microsoft
+     * [1227]C#
+          + [1228]Visual C#
+     * [1229]Visual Basic .NET
+     * [1230]C++/CLI
+          + [1231]Managed
+     * [1232]F#
+     * [1233]J#
+     * [1234]JScript .NET
+     * Windows PowerShell
+
+   Other
+     * [1235]Axum
+     * [1236]A#
+     * [1237]Boo
+     * [1238]Cobra
+     * [1239]IronScheme
+          + [1240]IronLisp
+     * [1241]IronPython
+     * [1242]IronRuby
+     * [1243]Nemerle
+     * [1244]Oxygene
+     * [1245]Phalanger
+     * [1246]P#
+     * [1247]Scala
+
+   Comparison
+     * [1248]C# and Java
+     * [1249]C# and Visual Basic .NET
+     * [1250]Java and .NET platforms
+     * [1251]Visual Basic and Visual Basic .NET
+
+   Organizations
+     * [1252].NET Foundation
+     * [1253]DotGNU
+     * [1254]Microsoft
+     * [1255]Xamarin
+
+     * [1256]v
+     * [1257]t
+     * [1258]e
+
+   [1259]Microsoft APIs and frameworks
+   Graphics
+     * [1260]Desktop Window Manager
+     * [1261]Direct2D
+     * [1262]Direct3D
+     * [1263]D3D (extensions)
+     * [1264]GDI / GDI+
+     * [1265]WPF
+     * [1266]Silverlight
+     * [1267]WinRT XAML
+     * [1268]Windows Color System
+     * [1269]Windows Image Acquisition
+     * [1270]Windows Imaging Component
+     * [1271]DirectX Graphics Infrastructure (DXGI)
+     * [1272]Windows Advanced Rasterization Platform
+     * [1273]WinG
+
+   Audio
+     * [1274]DirectMusic
+     * [1275]DirectSound
+     * [1276]DirectX plugin
+     * [1277]XACT
+     * [1278]Speech API
+     * [1279]XAudio2
+
+   Multimedia
+     * [1280]DirectX
+          + [1281]Media Objects
+          + [1282]Video Acceleration
+     * [1283]Xinput
+     * [1284]DirectInput
+     * [1285]DirectShow
+     * [1286]Image Mastering API
+     * [1287]Managed DirectX
+     * [1288]Media Foundation
+     * [1289]XNA
+     * [1290]Windows Media
+     * [1291]Video for Windows
+
+   Web
+     * [1292]MSHTML
+     * [1293]RSS Platform
+     * [1294]JScript
+     * [1295]VBScript
+     * [1296]BHO
+     * [1297]XDR
+     * [1298]SideBar Gadgets
+     * [1299]TypeScript
+
+   Data access
+     * [1300]Data Access Components (MDAC)
+          + [1301]ADO
+          + [1302]ADO.NET
+          + [1303]ODBC
+          + [1304]OLE DB
+     * [1305]Extensible Storage Engine
+     * [1306]Entity Framework
+     * [1307]Sync Framework
+     * [1308]Jet Engine
+     * [1309]MSXML
+     * [1310]OPC
+
+   Networking
+     * [1311]Winsock
+          + [1312]LSP
+     * [1313]Winsock Kernel
+     * [1314]Filtering Platform
+     * [1315]NDIS
+     * [1316]Windows Rally
+     * [1317]BITS
+     * [1318]P2P API
+     * [1319]MSMQ
+     * [1320]MS MPI
+     * [1321]DirectPlay
+
+   Communication
+     * [1322]Messaging API
+     * [1323]Telephony API
+     * [1324]WCF
+
+   Administration and
+   management
+     * [1325]Win32 console
+     * [1326]Windows Script Host
+     * [1327]WMI (extensions)
+     * PowerShell
+     * [1328]Task Scheduler
+     * [1329]Offline Files
+     * [1330]Shadow Copy
+     * [1331]Windows Installer
+     * [1332]Error Reporting
+     * [1333]Event Log
+     * [1334]Common Log File System
+
+   [1335]Component model
+     * [1336]COM
+     * [1337]COM+
+     * [1338]ActiveX
+     * [1339]Distributed Component Object Model
+     * [1340].NET Framework
+
+   [1341]Libraries
+     * [1342]Framework Class Library
+     * [1343]Microsoft Foundation Classes (MFC)
+     * [1344]Active Template Library (ATL)
+     * [1345]Windows Template Library (WTL)
+
+   [1346]Device drivers
+     * [1347]WDM
+     * [1348]WDF
+          + [1349]KMDF
+          + [1350]UMDF
+     * [1351]WDDM
+     * [1352]NDIS
+     * [1353]UAA
+     * [1354]BDA
+     * [1355]VxD
+
+   Security
+     * [1356]Crypto API
+          + [1357]CAPICOM
+     * [1358]Windows CardSpace
+     * [1359]Data Protection API
+     * [1360]Security Support Provider Interface (SSPI)
+
+   [1361].NET
+     * [1362]ASP.NET
+     * [1363]ADO.NET
+     * [1364]Remoting
+     * [1365]Silverlight
+     * [1366]TPL
+     * [1367]WCF
+     * [1368]WCS
+     * [1369]WPF
+     * [1370]WF
+
+   [1371]Software factories
+     * [1372]EFx Factory
+     * [1373]Enterprise Library
+     * [1374]Composite UI
+     * [1375]CCF
+     * [1376]CSF
+
+   [1377]IPC
+     * [1378]MSRPC
+     * [1379]Dynamic Data Exchange (DDE)
+     * [1380]Remoting
+     * [1381]WCF
+
+                   Accessibility
+     * [1382]Active Accessibility
+     * [1383]UI Automation
+
+   Text and multilingual
+   support
+     * [1384]DirectWrite
+     * [1385]Text Services Framework
+     * [1386]Text Object Model
+     * [1387]Input method editor
+     * [1388]Language Interface Pack
+     * [1389]Multilingual User Interface
+     * [1390]Uniscribe
+
+   Retrieved from
+   "[1391]https://en.wikipedia.org/w/index.php?title=PowerShell&oldid=7469
+   93867"
+   [1392]Categories:
+     * [1393]Windows commands
+     * [1394].NET programming languages
+     * [1395]Dynamically typed programming languages
+     * [1396]Interpreters (computing)
+     * [1397]Windows administration
+     * [1398]Object-oriented programming languages
+     * [1399]Procedural programming languages
+     * [1400]Scripting languages
+     * [1401]Text-oriented programming languages
+     * [1402]Command shells
+     * [1403]Programming languages created in 2006
+     * [1404]Microsoft free software
+
+   Hidden categories:
+     * [1405]All articles with unsourced statements
+     * [1406]Articles with unsourced statements from May 2013
+     * [1407]All articles lacking reliable references
+     * [1408]Articles lacking reliable references from May 2015
+     * [1409]Articles with specifically marked weasel-worded phrases from
+       December 2015
+     * [1410]Vague or ambiguous time from December 2015
+     * [1411]Articles with unsourced statements from December 2015
+     * [1412]Wikipedia articles needing clarification from January 2014
+
+Navigation menu
+
+Personal tools
+
+     * Not logged in
+     * [1413]Talk
+     * [1414]Contributions
+     * [1415]Create account
+     * [1416]Log in
+
+Namespaces
+
+     * [1417]Article
+     * [1418]Talk
+
+Variants
+
+Views
+
+     * [1419]Read
+     * [1420]Edit
+     * [1421]View history
+
+More
+
+Search
+
+   ____________________ Search Go
+
+Navigation
+
+     * [1422]Main page
+     * [1423]Contents
+     * [1424]Featured content
+     * [1425]Current events
+     * [1426]Random article
+     * [1427]Donate to Wikipedia
+     * [1428]Wikipedia store
+
+Interaction
+
+     * [1429]Help
+     * [1430]About Wikipedia
+     * [1431]Community portal
+     * [1432]Recent changes
+     * [1433]Contact page
+
+Tools
+
+     * [1434]What links here
+     * [1435]Related changes
+     * [1436]Upload file
+     * [1437]Special pages
+     * [1438]Permanent link
+     * [1439]Page information
+     * [1440]Wikidata item
+     * [1441]Cite this page
+
+Print/export
+
+     * [1442]Create a book
+     * [1443]Download as PDF
+     * [1444]Printable version
+
+In other projects
+
+     * [1445]Wikimedia Commons
+     * [1446]Wikibooks
+     * [1447]Wikiversity
+
+Languages
+
+     * [1448]a+l+e+r+b+y+tm
+     * [1449]Català
+     * [1450]Cestina
+     * [1451]Dansk
+     * [1452]Deutsch
+     * [1453]Eesti
+     * [1454]Español
+     * [1455]f+a+r+s+
+     * [1456]Français
+     * [1457]­´
+     * [1458]Bahasa Indonesia
+     * [1459]Italiano
+     * [1460]E+B+R+J+T+
+     * [1461]Basa Jawa
+     * [1462]Nederlands
+     * [1463]¥¬
+     * [1464]Norsk bokmål
+     * [1465]Polski
+     * [1466]Português
+     * [1467]Russkij
+     * [1468]Suomi
+     * [1469]Türkçe
+     * [1470]Ukrayins'ka
+     * [1471]J+J+iD+J+Sh
+     * [1472]­
+     *
+
+   [1473]Edit links
+
+     * This page was last modified on 30 October 2016, at 20:55.
+     * Text is available under the [1474]Creative Commons
+       Attribution-ShareAlike License; additional terms may apply. By
+       using this site, you agree to the [1475]Terms of Use and
+       [1476]Privacy Policy. Wikipedia® is a registered trademark of the
+       [1477]Wikimedia Foundation, Inc., a non-profit organization.
+
+     * [1478]Privacy policy
+     * [1479]About Wikipedia
+     * [1480]Disclaimers
+     * [1481]Contact Wikipedia
+     * [1482]Developers
+     * [1483]Cookie statement
+     * [1484]Mobile view
+
+     * [1485]Wikimedia Foundation
+     * [1486]Powered by MediaWiki
+
+References
+
+   Visible links
+   1. android-app://org.wikipedia/http/en.m.wikipedia.org/wiki/PowerShell
+   2. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit
+   3. https://en.wikipedia.org/w/opensearch_desc.php
+   4. https://creativecommons.org/licenses/by-sa/3.0/
+   5. https://en.wikipedia.org/wiki/PowerShell#mw-head
+   6. https://en.wikipedia.org/wiki/PowerShell#p-search
+   7. https://en.wikipedia.org/wiki/File:PowerShell_5.0_icon.png
+   8. https://en.wikipedia.org/wiki/File:Windows_PowerShell_1.0_PD.png
+   9. https://en.wikipedia.org/wiki/Programming_paradigm
+  10. https://en.wikipedia.org/wiki/Multi-paradigm_programming_language
+  11. https://en.wikipedia.org/wiki/Imperative_programming
+  12. https://en.wikipedia.org/wiki/Pipeline_programming
+  13. https://en.wikipedia.org/wiki/Object-oriented_programming
+  14. https://en.wikipedia.org/wiki/Functional_programming
+  15. https://en.wikipedia.org/wiki/Reflective_programming
+  16. https://en.wikipedia.org/wiki/Software_design
+  17. https://en.wikipedia.org/wiki/Software_developer
+  18. https://en.wikipedia.org/wiki/Microsoft
+  19. https://en.wikipedia.org/wiki/Software_release_life_cycle
+  20. https://en.wikipedia.org/wiki/Software_release_life_cycle
+  21. https://en.wikipedia.org/wiki/Type_system
+  22. https://en.wikipedia.org/wiki/Strongly-typed_programming_language
+  23. https://en.wikipedia.org/wiki/Type_safety
+  24. https://en.wikipedia.org/wiki/Type_inference
+  25. https://en.wikipedia.org/wiki/Dynamic_typing
+  26. https://en.wikipedia.org/wiki/Computing_platform
+  27. https://en.wikipedia.org/wiki/.NET_Framework
+  28. https://en.wikipedia.org/wiki/.NET_Core
+  29. https://en.wikipedia.org/wiki/Operating_system
+  30. https://en.wikipedia.org/wiki/Windows_7
+  31. https://en.wikipedia.org/wiki/OS_X
+  32. https://en.wikipedia.org/wiki/CentOS
+  33. https://en.wikipedia.org/wiki/Ubuntu_(operating_system)
+  34. https://en.wikipedia.org/wiki/Software_license
+  35. https://en.wikipedia.org/wiki/MIT_License
+  36. https://en.wikipedia.org/wiki/PowerShell#cite_note-1
+  37. https://en.wikipedia.org/wiki/Proprietary_software
+  38. https://en.wikipedia.org/wiki/Filename_extension
+  39. http://microsoft.com/powershell
+  40. https://en.wikipedia.org/wiki/Korn_shell
+  41. https://en.wikipedia.org/wiki/Perl
+  42. https://en.wikipedia.org/wiki/C_Sharp_(programming_language)
+  43. https://en.wikipedia.org/wiki/AS/400_Control_Language
+  44. https://en.wikipedia.org/wiki/DIGITAL_Command_Language
+  45. https://en.wikipedia.org/wiki/SQL
+  46. https://en.wikipedia.org/wiki/Tcl
+  47. https://en.wikipedia.org/wiki/Tk_(framework)
+  48. https://en.wikipedia.org/wiki/Chef_(software)
+  49. https://en.wikipedia.org/wiki/Puppet_(software)
+  50. https://en.wikipedia.org/wiki/PowerShell#cite_note-snover2008-2
+  51. https://en.wikipedia.org/wiki/Microsoft
+  52. https://en.wikipedia.org/wiki/Command-line_interface
+  53. https://en.wikipedia.org/wiki/Shell_(computing)
+  54. https://en.wikipedia.org/wiki/Scripting_language
+  55. https://en.wikipedia.org/wiki/.NET_Framework
+  56. https://en.wikipedia.org/wiki/Component_Object_Model
+  57. https://en.wikipedia.org/wiki/Windows_Management_Instrumentation
+  58. https://en.wikipedia.org/wiki/WS-Management
+  59. https://en.wikipedia.org/wiki/Common_Information_Model_(computing)
+  60. https://en.wikipedia.org/wiki/Open-source_software
+  61. https://en.wikipedia.org/wiki/Cross-platform
+  62. https://en.wikipedia.org/wiki/PowerShell#cite_note-ars-opensource-3
+  63. https://en.wikipedia.org/wiki/Class_(computer_science)
+  64. https://en.wikipedia.org/wiki/PowerShell#cite_note-how-4
+  65. https://en.wikipedia.org/wiki/PowerShell#cite_note-MSDN-5
+  66. https://en.wikipedia.org/wiki/File_system
+  67. https://en.wikipedia.org/wiki/Windows_Registry
+  68. https://en.wikipedia.org/wiki/API
+  69. https://en.wikipedia.org/wiki/Graphical_user_interface
+  70. https://en.wikipedia.org/wiki/Microsoft_Exchange_Server
+  71. https://en.wikipedia.org/wiki/Graphical_User_Interface
+  72. https://en.wikipedia.org/wiki/PowerShell#cite_note-how-4
+  73. https://en.wikipedia.org/wiki/PowerShell#cite_note-lowe2007-6
+  74. https://en.wikipedia.org/wiki/Microsoft_SQL_Server_2008
+  75. https://en.wikipedia.org/wiki/PowerShell#cite_note-snover2007b-7
+  76. https://en.wikipedia.org/wiki/Manual_page_(Unix)
+  77. https://en.wikipedia.org/wiki/Unix_shell
+  78. https://en.wikipedia.org/wiki/PowerShell#Background
+  79. https://en.wikipedia.org/wiki/PowerShell#Design
+  80. https://en.wikipedia.org/wiki/PowerShell#Cmdlets
+  81. https://en.wikipedia.org/wiki/PowerShell#Pipeline
+  82. https://en.wikipedia.org/wiki/PowerShell#Scripting
+  83. https://en.wikipedia.org/wiki/PowerShell#Hosting
+  84. https://en.wikipedia.org/wiki/PowerShell#Desired_State_Configuration
+  85. https://en.wikipedia.org/wiki/PowerShell#Versions
+  86. https://en.wikipedia.org/wiki/PowerShell#PowerShell_1.0
+  87. https://en.wikipedia.org/wiki/PowerShell#PowerShell_2.0
+  88. https://en.wikipedia.org/wiki/PowerShell#PowerShell_3.0
+  89. https://en.wikipedia.org/wiki/PowerShell#PowerShell_4.0
+  90. https://en.wikipedia.org/wiki/PowerShell#PowerShell_5.0
+  91. https://en.wikipedia.org/wiki/PowerShell#Comparison_of_cmdlets_with_similar_commands
+  92. https://en.wikipedia.org/wiki/PowerShell#File_extensions
+  93. https://en.wikipedia.org/wiki/PowerShell#Application_support
+  94. https://en.wikipedia.org/wiki/PowerShell#Snap-ins_and_hosts
+  95. https://en.wikipedia.org/wiki/PowerShell#Alternative_implementation
+  96. https://en.wikipedia.org/wiki/PowerShell#See_also
+  97. https://en.wikipedia.org/wiki/PowerShell#References
+  98. https://en.wikipedia.org/wiki/PowerShell#Further_reading
+  99. https://en.wikipedia.org/wiki/PowerShell#External_links
+ 100. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=1
+ 101. https://en.wikipedia.org/wiki/Microsoft_DOS
+ 102. https://en.wikipedia.org/wiki/Microsoft_Windows
+ 103. https://en.wikipedia.org/wiki/Personal_computer
+ 104. https://en.wikipedia.org/wiki/Shell_(computing)
+ 105. https://en.wikipedia.org/wiki/COMMAND.COM
+ 106. https://en.wikipedia.org/wiki/MS-DOS
+ 107. https://en.wikipedia.org/wiki/Windows_9x
+ 108. https://en.wikipedia.org/wiki/Command_Prompt_(Windows)
+ 109. https://en.wikipedia.org/wiki/Windows_NT
+ 110. https://en.wikipedia.org/wiki/Command_line_interpreter
+ 111. https://en.wikipedia.org/wiki/Console_application
+ 112. https://en.wikipedia.org/wiki/Batch_files
+ 113. https://en.wikipedia.org/wiki/Graphical_user_interface
+ 114. https://en.wikipedia.org/wiki/Windows_Server_2003
+ 115. https://en.wikipedia.org/wiki/PowerShell#cite_note-pcmag-server2003-8
+ 116. https://en.wikipedia.org/wiki/Windows_Script_Host
+ 117. https://en.wikipedia.org/wiki/Windows_98
+ 118. https://en.wikipedia.org/wiki/Active_Script
+ 119. https://en.wikipedia.org/wiki/JScript
+ 120. https://en.wikipedia.org/wiki/VBScript
+ 121. https://en.wikipedia.org/wiki/API
+ 122. https://en.wikipedia.org/wiki/Component_Object_Model
+ 123. https://en.wikipedia.org/wiki/Vulnerability_(computer_science)
+ 124. https://en.wikipedia.org/wiki/Computer_viruses
+ 125. https://en.wikipedia.org/wiki/Netsh
+ 126. https://en.wikipedia.org/wiki/Windows_Management_Instrumentation_Command-line
+ 127. https://en.wikipedia.org/wiki/PowerShell#cite_note-MonadManifesto-9
+ 128. https://en.wikipedia.org/wiki/Development_stage#Beta
+ 129. https://en.wikipedia.org/wiki/PowerShell#cite_note-monad-renamed-10
+ 130. https://en.wikipedia.org/wiki/PowerShell#cite_note-powershell-vista-11
+ 131. https://en.wikipedia.org/wiki/Community_Technology_Preview
+ 132. https://en.wikipedia.org/wiki/Ubuntu_(operating_system)
+ 133. https://en.wikipedia.org/wiki/PowerShell#cite_note-PowerShell-V2-RTM-12
+ 134. https://en.wikipedia.org/wiki/PowerShell#cite_note-13
+ 135. https://en.wikipedia.org/wiki/PowerShell#cite_note-14
+ 136. https://en.wikipedia.org/wiki/OS_X
+ 137. https://en.wikipedia.org/wiki/CentOS
+ 138. https://en.wikipedia.org/wiki/Ubuntu_(operating_system)
+ 139. https://en.wikipedia.org/wiki/PowerShell#cite_note-ars-opensource-3
+ 140. https://en.wikipedia.org/wiki/GitHub
+ 141. https://en.wikipedia.org/wiki/PowerShell#cite_note-15
+ 142. https://en.wikipedia.org/wiki/.NET_Core
+ 143. https://en.wikipedia.org/wiki/.NET_Framework
+ 144. https://en.wikipedia.org/wiki/PowerShell#cite_note-16
+ 145. https://en.wikipedia.org/wiki/Windows_Server_2016#Nano_Server
+ 146. https://en.wikipedia.org/wiki/PowerShell#cite_note-17
+ 147. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=2
+ 148. https://en.wikipedia.org/wiki/POSIX_1003.2
+ 149. https://en.wikipedia.org/wiki/PowerShell#cite_note-18
+ 150. https://en.wikipedia.org/wiki/PowerShell#cite_note-19
+ 151. https://en.wikipedia.org/wiki/.NET_Framework
+ 152. https://en.wikipedia.org/wiki/Executable
+ 153. https://en.wikipedia.org/wiki/Process_(computing)
+ 154. https://en.wikipedia.org/wiki/Command-line_interface
+ 155. https://en.wikipedia.org/wiki/Win32_console
+ 156. https://en.wikipedia.org/wiki/Command-line_completion
+ 157. https://en.wikipedia.org/wiki/Alias_(command)
+ 158. https://en.wikipedia.org/wiki/Named_parameter
+ 159. https://en.wikipedia.org/wiki/Parameter_(computer_science)
+ 160. https://en.wikipedia.org/wiki/Wikipedia:Citation_needed
+ 161. https://en.wikipedia.org/wiki/XML
+ 162. https://en.wikipedia.org/wiki/PowerShell#cite_note-20
+ 163. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=3
+ 164. https://en.wikipedia.org/wiki/PowerShell#cite_note-cmdlets-21
+ 165. https://en.wikipedia.org/wiki/PowerShell#cite_note-cmdlets-21
+ 166. https://en.wikipedia.org/wiki/Class_(computing)
+ 167. https://en.wikipedia.org/wiki/PowerShell#cite_note-cmdlets-21
+ 168. https://en.wikipedia.org/wiki/PowerShell#cite_note-firstcmdlet-22
+ 169. https://en.wikipedia.org/wiki/Attribute_(computing)
+ 170. https://en.wikipedia.org/wiki/Enumerated_type
+ 171. https://en.wikipedia.org/wiki/PowerShell#cite_note-23
+ 172. https://en.wikipedia.org/wiki/PowerShell#cite_note-24
+ 173. https://en.wikipedia.org/wiki/Property_(programming)
+ 174. https://en.wikipedia.org/wiki/Mutator_method
+ 175. https://en.wikipedia.org/wiki/PowerShell#cite_note-25
+ 176. https://en.wikipedia.org/wiki/PowerShell#cite_note-26
+ 177. https://en.wikipedia.org/wiki/.NET_Framework
+ 178. https://en.wikipedia.org/wiki/API
+ 179. https://en.wikipedia.org/wiki/List_of_CLI_languages
+ 180. https://en.wikipedia.org/wiki/API
+ 181. https://en.wikipedia.org/wiki/Path_(computing)
+ 182. https://en.wikipedia.org/wiki/File_system
+ 183. https://en.wikipedia.org/wiki/Windows_Registry
+ 184. https://en.wikipedia.org/wiki/Public_key_certificate
+ 185. https://en.wikipedia.org/wiki/PowerShell#cite_note-27
+ 186. https://en.wikipedia.org/wiki/Microsoft_Windows
+ 187. https://en.wikipedia.org/wiki/File_system
+ 188. https://en.wikipedia.org/wiki/Windows_Management_Instrumentation
+ 189. https://en.wikipedia.org/wiki/List_of_Microsoft_Windows_components
+ 190. https://en.wikipedia.org/wiki/Wikipedia:Citation_needed
+ 191. https://en.wikipedia.org/wiki/Wikipedia:Citation_needed
+ 192. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=4
+ 193. https://en.wikipedia.org/wiki/Wikipedia:Citation_needed
+ 194. https://en.wikipedia.org/wiki/Pipeline_(Unix)
+ 195. https://en.wikipedia.org/wiki/Bitstream
+ 196. https://en.wikipedia.org/wiki/Object_(computer_science)
+ 197. https://en.wikipedia.org/wiki/Serialization_(computing)
+ 198. https://en.wikipedia.org/wiki/Parser
+ 199. https://en.wikipedia.org/wiki/PowerShell#cite_note-28
+ 200. https://en.wikipedia.org/wiki/PowerShell#cite_note-29
+ 201. https://en.wikipedia.org/wiki/PowerShell#cite_note-30
+ 202. https://en.wikipedia.org/wiki/PowerShell#cite_note-31
+ 203. https://en.wikipedia.org/wiki/PowerShell#cite_note-32
+ 204. https://en.wikipedia.org/wiki/PowerShell#cite_note-33
+ 205. https://en.wikipedia.org/wiki/PowerShell#cite_note-34
+ 206. https://en.wikipedia.org/wiki/PowerShell#cite_note-about_Format.ps1xml-35
+ 207. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=5
+ 208. https://en.wikipedia.org/wiki/Dynamically_typed
+ 209. https://en.wikipedia.org/wiki/Scripting_language
+ 210. https://en.wikipedia.org/wiki/Imperative_programming
+ 211. https://en.wikipedia.org/wiki/Conditional_(programming)
+ 212. https://en.wikipedia.org/wiki/While_loop
+ 213. https://en.wikipedia.org/wiki/Do_while_loop
+ 214. https://en.wikipedia.org/wiki/For_loop
+ 215. https://en.wikipedia.org/wiki/Foreach
+ 216. https://en.wikipedia.org/wiki/Closure_(computer_science)
+ 217. https://en.wikipedia.org/wiki/Lambda_expressions
+ 218. https://en.wikipedia.org/wiki/PowerShell#cite_note-lambda1-36
+ 219. https://en.wikipedia.org/wiki/Value_(computer_science)
+ 220. https://en.wikipedia.org/wiki/Value_(computer_science)
+ 221. https://en.wikipedia.org/wiki/Wikipedia:Citation_needed
+ 222. https://en.wikipedia.org/wiki/PowerShell#cite_note-37
+ 223. https://en.wikipedia.org/wiki/Array_data_type
+ 224. https://en.wikipedia.org/wiki/Associative_array
+ 225. https://en.wikipedia.org/wiki/PowerShell#cite_note-38
+ 226. https://en.wikipedia.org/wiki/PowerShell#cite_note-39
+ 227. https://en.wikipedia.org/wiki/PowerShell#cite_note-about_Functions-40
+ 228. https://en.wikipedia.org/wiki/PowerShell#cite_note-about_Functions-40
+ 229. https://en.wikipedia.org/wiki/PowerShell#cite_note-about_Functions-40
+ 230. https://en.wikipedia.org/wiki/PowerShell#cite_note-dotnet-41
+ 231. https://en.wikipedia.org/wiki/PowerShell#cite_note-dotnet-41
+ 232. https://en.wikipedia.org/wiki/String_(computer_science)
+ 233. https://en.wikipedia.org/wiki/Escape_character
+ 234. https://en.wikipedia.org/wiki/Quotation_mark
+ 235. https://en.wikipedia.org/wiki/PowerShell#cite_note-42
+ 236. https://en.wikipedia.org/wiki/Exception_handling_syntax
+ 237. https://en.wikipedia.org/wiki/PowerShell#cite_note-43
+ 238. https://en.wikipedia.org/wiki/PowerShell#cite_note-44
+ 239. https://en.wikipedia.org/wiki/Code_signing
+ 240. https://en.wikipedia.org/wiki/Code_Access_Security
+ 241. https://en.wikipedia.org/wiki/PowerShell#cite_note-45
+ 242. https://en.wikipedia.org/wiki/Binary_prefix
+ 243. https://en.wikipedia.org/wiki/Scientific_notation
+ 244. https://en.wikipedia.org/wiki/PowerShell#cite_note-46
+ 245. https://en.wikipedia.org/wiki/Wikipedia:NOTRS
+ 246. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=6
+ 247. https://en.wikipedia.org/wiki/Managed_code
+ 248. https://en.wikipedia.org/wiki/API
+ 249. https://en.wikipedia.org/wiki/Process_(computing)
+ 250. https://en.wikipedia.org/wiki/PowerShell#cite_note-how-4
+ 251. https://en.wikipedia.org/wiki/Wikipedia:Citation_needed
+ 252. https://en.wikipedia.org/wiki/PowerShell#cite_note-how-4
+ 253. https://en.wikipedia.org/wiki/Assembly_(CLI)
+ 254. https://en.wikipedia.org/wiki/Reflection_(computer_science)
+ 255. https://en.wikipedia.org/wiki/PowerShell#cite_note-how-4
+ 256. https://en.wikipedia.org/wiki/Wikipedia:Citation_needed
+ 257. https://en.wikipedia.org/wiki/Microsoft_Exchange_Server
+ 258. https://en.wikipedia.org/wiki/Interpreter
+ 259. https://en.wikipedia.org/wiki/Wikipedia:Citation_needed
+ 260. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=7
+ 261. https://en.wikipedia.org/wiki/PowerShell#cite_note-47
+ 262. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=8
+ 263. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=9
+ 264. https://en.wikipedia.org/wiki/Windows_XP_SP2
+ 265. https://en.wikipedia.org/wiki/Windows_Server_2003
+ 266. https://en.wikipedia.org/wiki/Windows_Vista
+ 267. https://en.wikipedia.org/wiki/Windows_Server_2008
+ 268. https://en.wikipedia.org/wiki/PowerShell#cite_note-48
+ 269. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=10
+ 270. https://en.wikipedia.org/wiki/Integrated_development_environment
+ 271. https://en.wikipedia.org/wiki/Windows_7
+ 272. https://en.wikipedia.org/wiki/Windows_Server_2008_R2
+ 273. https://en.wikipedia.org/wiki/PowerShell#cite_note-49
+ 274. https://en.wikipedia.org/wiki/Windows_XP
+ 275. https://en.wikipedia.org/wiki/Windows_Server_2003
+ 276. https://en.wikipedia.org/wiki/Windows_Vista
+ 277. https://en.wikipedia.org/wiki/PowerShell#cite_note-50
+ 278. https://en.wikipedia.org/wiki/PowerShell#cite_note-51
+ 279. https://en.wikipedia.org/wiki/PowerShell#cite_note-52
+ 280. https://en.wikipedia.org/wiki/PowerShell#cite_note-53
+ 281. https://en.wikipedia.org/wiki/PowerShell#cite_note-54
+ 282. https://en.wikipedia.org/wiki/PowerShell#cite_note-55
+ 283. https://en.wikipedia.org/wiki/PowerShell#cite_note-56
+ 284. https://en.wikipedia.org/wiki/WS-Management
+ 285. https://en.wikipedia.org/wiki/Transaction_processing
+ 286. https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Words_to_watch#Unsupported_attributions
+ 287. https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Dates_and_numbers#Chronological_items
+ 288. https://en.wikipedia.org/wiki/Wikipedia:Citation_needed
+ 289. https://en.wikipedia.org/wiki/Modular_programming
+ 290. https://en.wikipedia.org/wiki/Internationalization_and_localization
+ 291. https://en.wikipedia.org/wiki/Breakpoint
+ 292. https://en.wikipedia.org/wiki/Syntax_highlighting
+ 293. https://en.wikipedia.org/wiki/Background_Intelligent_Transfer_Service
+ 294. https://en.wikipedia.org/wiki/PowerShell#cite_note-57
+ 295. https://en.wikipedia.org/wiki/Windows_Presentation_Foundation
+ 296. https://en.wikipedia.org/wiki/Grid_view
+ 297. https://en.wikipedia.org/wiki/Here_document
+ 298. https://en.wikipedia.org/wiki/PowerShell#cite_note-58
+ 299. https://en.wikipedia.org/wiki/PowerShell#cite_note-59
+ 300. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=11
+ 301. https://en.wikipedia.org/wiki/Windows_8
+ 302. https://en.wikipedia.org/wiki/Windows_Server_2012
+ 303. https://en.wikipedia.org/wiki/Windows_7
+ 304. https://en.wikipedia.org/wiki/Windows_Server_2008
+ 305. https://en.wikipedia.org/wiki/Windows_Server_2008_R2
+ 306. https://en.wikipedia.org/wiki/PowerShell#cite_note-60
+ 307. https://en.wikipedia.org/wiki/PowerShell#cite_note-WMF3-61
+ 308. https://en.wikipedia.org/wiki/PowerShell#cite_note-WMF3-61
+ 309. https://en.wikipedia.org/wiki/Community_Technology_Preview
+ 310. https://en.wikipedia.org/wiki/PowerShell#cite_note-62
+ 311. https://en.wikipedia.org/wiki/Beta_release
+ 312. https://en.wikipedia.org/wiki/Release_candidate
+ 313. https://en.wikipedia.org/wiki/Wikipedia:Citation_needed
+ 314. https://en.wikipedia.org/wiki/PowerShell#cite_note-WMF3-61
+ 315. https://en.wikipedia.org/wiki/PowerShell#cite_note-63
+ 316. https://en.wikipedia.org/wiki/Code_completion
+ 317. https://en.wikipedia.org/wiki/Snippet_(programming)
+ 318. https://en.wikipedia.org/wiki/Wikipedia:Please_clarify
+ 319. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=12
+ 320. https://en.wikipedia.org/wiki/Windows_8.1
+ 321. https://en.wikipedia.org/wiki/Windows_Server_2012_R2
+ 322. https://en.wikipedia.org/wiki/Windows_7_SP1
+ 323. https://en.wikipedia.org/wiki/Windows_Server_2008_R2
+ 324. https://en.wikipedia.org/wiki/Windows_Server_2012
+ 325. https://en.wikipedia.org/wiki/PowerShell#cite_note-64
+ 326. https://en.wikipedia.org/wiki/PowerShell#cite_note-65
+ 327. https://en.wikipedia.org/wiki/PowerShell#cite_note-66
+ 328. https://en.wikipedia.org/wiki/PowerShell#cite_note-67
+ 329. https://en.wikipedia.org/wiki/DMTF
+ 330. https://en.wikipedia.org/wiki/WS-Management
+ 331. https://en.wikipedia.org/wiki/Network_switch
+ 332. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=13
+ 333. https://en.wikipedia.org/wiki/PowerShell#cite_note-68
+ 334. https://en.wikipedia.org/wiki/Chocolatey_(software_package_manager)
+ 335. https://en.wikipedia.org/wiki/Package_management
+ 336. https://en.wikipedia.org/wiki/PowerShell#cite_note-69
+ 337. https://en.wikipedia.org/wiki/Data_link_layer
+ 338. https://en.wikipedia.org/wiki/PowerShell#cite_note-Snover_2014-04-03-70
+ 339. https://en.wikipedia.org/wiki/Windows_10_Anniversary_Update
+ 340. https://en.wikipedia.org/wiki/PowerShell#cite_note-71
+ 341. https://en.wikipedia.org/wiki/PowerShell#cite_note-72
+ 342. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=14
+ 343. https://en.wikipedia.org/wiki/CMD.EXE
+ 344. https://en.wikipedia.org/wiki/COMMAND.COM
+ 345. https://en.wikipedia.org/wiki/Unix_shell
+ 346. https://en.wikipedia.org/wiki/Dir_(command)
+ 347. https://en.wikipedia.org/wiki/Ls
+ 348. https://en.wikipedia.org/wiki/PowerShell#cite_note-74
+ 349. https://en.wikipedia.org/wiki/Ping_(networking_utility)
+ 350. https://en.wikipedia.org/wiki/Ping_(networking_utility)
+ 351. https://en.wikipedia.org/wiki/TYPE_(DOS_command)
+ 352. https://en.wikipedia.org/wiki/Cat_(Unix)
+ 353. https://en.wikipedia.org/wiki/Help_(command)
+ 354. https://en.wikipedia.org/wiki/Type_(Unix)
+ 355. https://en.wikipedia.org/wiki/Which_(Unix)
+ 356. https://en.wikipedia.org/w/index.php?title=Compgen_(Unix)&action=edit&redlink=1
+ 357. https://en.wikipedia.org/wiki/Help_(command)
+ 358. https://en.wikipedia.org/wiki/Apropos_(Unix)
+ 359. https://en.wikipedia.org/wiki/Manpage
+ 360. https://en.wikipedia.org/wiki/Cls_(computing)
+ 361. https://en.wikipedia.org/wiki/Clear_(Unix)
+ 362. https://en.wikipedia.org/wiki/PowerShell#cite_note-75
+ 363. https://en.wikipedia.org/wiki/Copy_(command)
+ 364. https://en.wikipedia.org/wiki/Cp_(Unix)
+ 365. https://en.wikipedia.org/wiki/Move_(command)
+ 366. https://en.wikipedia.org/wiki/Mv
+ 367. https://en.wikipedia.org/wiki/Del_(command)
+ 368. https://en.wikipedia.org/wiki/Del_(command)
+ 369. https://en.wikipedia.org/wiki/Rmdir
+ 370. https://en.wikipedia.org/wiki/Rmdir
+ 371. https://en.wikipedia.org/wiki/Rm_(Unix)
+ 372. https://en.wikipedia.org/wiki/Ren_(command)
+ 373. https://en.wikipedia.org/wiki/Ren_(command)
+ 374. https://en.wikipedia.org/wiki/Mv
+ 375. https://en.wikipedia.org/wiki/Cd_(command)
+ 376. https://en.wikipedia.org/wiki/Pwd
+ 377. https://en.wikipedia.org/wiki/Pushd_and_popd
+ 378. https://en.wikipedia.org/wiki/Pushd_and_popd
+ 379. https://en.wikipedia.org/wiki/Cd_(command)
+ 380. https://en.wikipedia.org/wiki/Cd_(command)
+ 381. https://en.wikipedia.org/wiki/Tee_(command)
+ 382. https://en.wikipedia.org/wiki/Echo_(command)
+ 383. https://en.wikipedia.org/wiki/PowerShell#cite_note-Available_tlist_kill-76
+ 384. https://en.wikipedia.org/wiki/PowerShell#cite_note-Available_tasklist_taskkill-77
+ 385. https://en.wikipedia.org/wiki/Ps_(Unix)
+ 386. https://en.wikipedia.org/wiki/Kill_(command)
+ 387. https://en.wikipedia.org/wiki/PowerShell#cite_note-Available_tlist_kill-76
+ 388. https://en.wikipedia.org/wiki/PowerShell#cite_note-Available_tasklist_taskkill-77
+ 389. https://en.wikipedia.org/wiki/PowerShell#cite_note-UNIX_kill_misnomer-78
+ 390. https://en.wikipedia.org/wiki/Find_(command)
+ 391. https://en.wikipedia.org/wiki/Findstr_(computing)
+ 392. https://en.wikipedia.org/wiki/Grep
+ 393. https://en.wikipedia.org/wiki/Environment_variable#DOS
+ 394. https://en.wikipedia.org/wiki/Wget
+ 395. https://en.wikipedia.org/wiki/CURL#curl
+ 396. https://en.wikipedia.org/wiki/PowerShell#cite_ref-74
+ 397. https://en.wikipedia.org/wiki/Ping_(networking_utility)
+ 398. https://en.wikipedia.org/wiki/Object_(programming)
+ 399. https://en.wikipedia.org/wiki/PowerShell#cite_note-73
+ 400. https://en.wikipedia.org/wiki/PowerShell#cite_ref-75
+ 401. https://en.wikipedia.org/wiki/PowerShell#cite_ref-Available_tlist_kill_76-0
+ 402. https://en.wikipedia.org/wiki/PowerShell#cite_ref-Available_tlist_kill_76-1
+ 403. https://en.wikipedia.org/wiki/PowerShell#cite_ref-Available_tasklist_taskkill_77-0
+ 404. https://en.wikipedia.org/wiki/PowerShell#cite_ref-Available_tasklist_taskkill_77-1
+ 405. https://en.wikipedia.org/wiki/PowerShell#cite_ref-UNIX_kill_misnomer_78-0
+ 406. https://en.wikipedia.org/wiki/Signal_(computing)
+ 407. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=15
+ 408. https://en.wikipedia.org/wiki/PowerShell#cite_note-79
+ 409. https://en.wikipedia.org/wiki/PowerShell#cite_note-80
+ 410. https://en.wikipedia.org/wiki/PowerShell#cite_note-81
+ 411. https://en.wikipedia.org/wiki/PowerShell#cite_note-about_Format.ps1xml-35
+ 412. https://en.wikipedia.org/wiki/PowerShell#cite_note-82
+ 413. https://en.wikipedia.org/wiki/PowerShell#cite_note-83
+ 414. https://en.wikipedia.org/wiki/PowerShell#cite_note-84
+ 415. https://en.wikipedia.org/wiki/PowerShell#cite_note-85
+ 416. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=16
+ 417. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=17
+ 418. https://en.wikipedia.org/wiki/Microsoft_Exchange_Server
+ 419. https://en.wikipedia.org/wiki/Microsoft_Windows
+ 420. https://en.wikipedia.org/wiki/Windows_Server_2008
+ 421. https://en.wikipedia.org/wiki/Microsoft_SQL_Server
+ 422. https://en.wikipedia.org/wiki/SharePoint
+ 423. https://en.wikipedia.org/wiki/System_Center_Configuration_Manager
+ 424. https://en.wikipedia.org/wiki/System_Center_Operations_Manager
+ 425. https://en.wikipedia.org/wiki/System_Center_Virtual_Machine_Manager
+ 426. https://en.wikipedia.org/wiki/System_Center_Data_Protection_Manager
+ 427. https://en.wikipedia.org/wiki/Windows_Compute_Cluster_Server
+ 428. https://en.wikipedia.org/wiki/IBM_Lotus_Domino
+ 429. https://en.wikipedia.org/wiki/PowerShell#cite_note-86
+ 430. https://en.wikipedia.org/wiki/Office_Open_XML
+ 431. https://en.wikipedia.org/wiki/PowerShell#cite_note-87
+ 432. https://en.wikipedia.org/wiki/IBM_WebSphere_MQ
+ 433. https://en.wikipedia.org/wiki/PowerShell#cite_note-88
+ 434. https://en.wikipedia.org/wiki/Quest_Software
+ 435. https://en.wikipedia.org/wiki/PowerShell#cite_note-89
+ 436. https://en.wikipedia.org/wiki/PowerShell#cite_note-90
+ 437. https://en.wikipedia.org/wiki/VMware_vSphere
+ 438. https://en.wikipedia.org/wiki/PowerShell#cite_note-91
+ 439. https://en.wikipedia.org/wiki/Internet_Information_Services
+ 440. https://en.wikipedia.org/wiki/PowerShell#cite_note-92
+ 441. https://en.wikipedia.org/wiki/Windows_7
+ 442. https://en.wikipedia.org/wiki/PowerShell#cite_note-93
+ 443. https://en.wikipedia.org/wiki/Microsoft_Deployment_Toolkit
+ 444. https://en.wikipedia.org/wiki/PowerShell#cite_note-94
+ 445. https://en.wikipedia.org/wiki/NetApp
+ 446. https://en.wikipedia.org/wiki/PowerShell#cite_note-95
+ 447. https://en.wikipedia.org/wiki/PowerShell#cite_note-96
+ 448. https://en.wikipedia.org/wiki/JAMS_Scheduler
+ 449. https://en.wikipedia.org/wiki/PowerShell#cite_note-97
+ 450. https://en.wikipedia.org/w/index.php?title=UIAutomation&action=edit&redlink=1
+ 451. https://en.wikipedia.org/wiki/PowerShell#cite_note-98
+ 452. https://en.wikipedia.org/wiki/Dell
+ 453. https://en.wikipedia.org/wiki/PowerShell#cite_note-99
+ 454. https://en.wikipedia.org/w/index.php?title=LOGINventory&action=edit&redlink=1
+ 455. https://en.wikipedia.org/wiki/PowerShell#cite_note-100
+ 456. https://en.wikipedia.org/w/index.php?title=SePSX&action=edit&redlink=1
+ 457. https://en.wikipedia.org/wiki/PowerShell#cite_note-101
+ 458. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=18
+ 459. https://en.wikipedia.org/wiki/Bash_(Unix_shell)
+ 460. https://en.wikipedia.org/wiki/PowerShell#cite_note-pash-102
+ 461. https://en.wikipedia.org/wiki/Open_source
+ 462. https://en.wikipedia.org/wiki/Cross-platform
+ 463. https://en.wikipedia.org/wiki/Mono_(software)
+ 464. https://en.wikipedia.org/wiki/C_Sharp_(programming_language)
+ 465. https://en.wikipedia.org/wiki/GNU_General_Public_License
+ 466. https://en.wikipedia.org/wiki/PowerShell#cite_note-pash-102
+ 467. https://en.wikipedia.org/wiki/PowerShell#cite_note-pash_project-103
+ 468. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=19
+ 469. https://en.wikipedia.org/wiki/Common_Information_Model_(computing)
+ 470. https://en.wikipedia.org/wiki/Comparison_of_command_shells
+ 471. https://en.wikipedia.org/wiki/Comparison_of_programming_languages
+ 472. https://en.wikipedia.org/wiki/Web-Based_Enterprise_Management
+ 473. https://en.wikipedia.org/wiki/Windows_Script_Host
+ 474. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=20
+ 475. https://en.wikipedia.org/wiki/PowerShell#cite_ref-1
+ 476. https://github.com/PowerShell/PowerShell/blob/master/LICENSE.txt
+ 477. https://en.wikipedia.org/wiki/PowerShell#cite_ref-snover2008_2-0
+ 478. https://blogs.msdn.microsoft.com/powershell/2008/05/25/powershell-and-wpf-wtf/
+ 479. https://en.wikipedia.org/wiki/PowerShell#cite_ref-ars-opensource_3-0
+ 480. https://en.wikipedia.org/wiki/PowerShell#cite_ref-ars-opensource_3-1
+ 481. http://arstechnica.com/information-technology/2016/08/powershell-is-microsofts-latest-open-source-release-coming-to-linux-os-x/
+ 482. https://en.wikipedia.org/wiki/Ars_Technica
+ 483. https://en.wikipedia.org/wiki/Cond%C3%A9_Nast
+ 484. https://en.wikipedia.org/wiki/PowerShell#cite_ref-how_4-0
+ 485. https://en.wikipedia.org/wiki/PowerShell#cite_ref-how_4-1
+ 486. https://en.wikipedia.org/wiki/PowerShell#cite_ref-how_4-2
+ 487. https://en.wikipedia.org/wiki/PowerShell#cite_ref-how_4-3
+ 488. https://en.wikipedia.org/wiki/PowerShell#cite_ref-how_4-4
+ 489. http://msdn2.microsoft.com/en-us/library/ms714658.aspx
+ 490. https://en.wikipedia.org/wiki/Microsoft_Developer_Network
+ 491. https://en.wikipedia.org/wiki/Microsoft
+ 492. https://en.wikipedia.org/wiki/PowerShell#cite_ref-MSDN_5-0
+ 493. https://web.archive.org/web/20081006195551/http://msdn.microsoft.com/en-us/magazine/cc163293.aspx
+ 494. https://en.wikipedia.org/wiki/MSDN_Magazine
+ 495. https://msdn.microsoft.com/en-us/magazine/cc163293.aspx
+ 496. https://en.wikipedia.org/wiki/PowerShell#cite_ref-lowe2007_6-0
+ 497. http://www.techrepublic.com/article/exchange-2007-get-used-to-the-command-line/
+ 498. https://en.wikipedia.org/wiki/TechRepublic
+ 499. https://en.wikipedia.org/wiki/CBS_Interactive
+ 500. https://en.wikipedia.org/wiki/PowerShell#cite_ref-snover2007b_7-0
+ 501. http://blogs.msdn.com/powershell/archive/2007/11/13/sql-server-support-for-powershell.aspx
+ 502. https://en.wikipedia.org/wiki/PowerShell#cite_ref-pcmag-server2003_8-0
+ 503. http://www.pcmag.com/article2/0,2704,1040410,00.asp
+ 504. https://en.wikipedia.org/wiki/PC_Magazine
+ 505. https://en.wikipedia.org/wiki/Ziff_Davis
+ 506. https://en.wikipedia.org/wiki/PowerShell#cite_ref-MonadManifesto_9-0
+ 507. http://blogs.msdn.com/b/powershell/archive/2007/03/19/monad-manifesto-the-origin-of-windows-powershell.aspx
+ 508. https://en.wikipedia.org/wiki/Microsoft
+ 509. https://en.wikipedia.org/wiki/PowerShell#cite_ref-monad-renamed_10-0
+ 510. https://blogs.msdn.microsoft.com/powershell/2006/04/25/windows-powershell-monad-has-arrived/
+ 511. https://en.wikipedia.org/wiki/Microsoft
+ 512. https://en.wikipedia.org/wiki/PowerShell#cite_ref-powershell-vista_11-0
+ 513. http://blogs.msdn.com/powershell/archive/2006/11/15/windows-powershell-windows-vista.aspx
+ 514. https://en.wikipedia.org/wiki/Microsoft
+ 515. https://en.wikipedia.org/wiki/PowerShell#cite_ref-PowerShell-V2-RTM_12-0
+ 516. https://web.archive.org/web/20131013100052/http://support.microsoft.com/kb/968929
+ 517. https://en.wikipedia.org/wiki/Microsoft
+ 518. http://support.microsoft.com/kb/968929
+ 519. https://en.wikipedia.org/wiki/PowerShell#cite_ref-13
+ 520. https://blogs.technet.microsoft.com/heyscriptingguy/2015/12/14/what-is-pester-and-why-should-i-care/
+ 521. https://en.wikipedia.org/wiki/PowerShell#cite_ref-14
+ 522. https://azure.microsoft.com/en-us/blog/powershell-is-open-sourced-and-is-available-on-linux/
+ 523. https://en.wikipedia.org/wiki/Microsoft
+ 524. https://en.wikipedia.org/wiki/PowerShell#cite_ref-15
+ 525. https://github.com/PowerShell/PowerShell
+ 526. https://en.wikipedia.org/wiki/PowerShell#cite_ref-16
+ 527. https://blogs.msdn.microsoft.com/powershell/2016/08/18/powershell-on-linux-and-open-source-2/
+ 528. https://en.wikipedia.org/wiki/Microsoft
+ 529. https://en.wikipedia.org/wiki/PowerShell#cite_ref-17
+ 530. https://en.wikipedia.org/wiki/Mary_Jo_Foley
+ 531. http://www.zdnet.com/article/microsoft-open-sources-powershell-brings-it-to-linux-and-mac-os-x/
+ 532. https://en.wikipedia.org/wiki/ZDNet
+ 533. https://en.wikipedia.org/wiki/CBS_Interactive
+ 534. https://en.wikipedia.org/wiki/PowerShell#cite_ref-18
+ 535. https://books.google.com/books?id=MYZQAAAAMAAJ
+ 536. https://en.wikipedia.org/wiki/International_Standard_Book_Number
+ 537. https://en.wikipedia.org/wiki/Special:BookSources/9781932394900
+ 538. https://en.wikipedia.org/wiki/Korn_shell
+ 539. https://en.wikipedia.org/wiki/PowerShell#cite_ref-19
+ 540. https://technet.microsoft.com/en-us/library/hh848304.aspx
+ 541. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 542. https://en.wikipedia.org/wiki/Microsoft
+ 543. https://en.wikipedia.org/wiki/PowerShell#cite_ref-20
+ 544. http://msdn2.microsoft.com/en-us/library/ms714419.aspx
+ 545. https://en.wikipedia.org/wiki/PowerShell#cite_ref-cmdlets_21-0
+ 546. https://en.wikipedia.org/wiki/PowerShell#cite_ref-cmdlets_21-1
+ 547. https://en.wikipedia.org/wiki/PowerShell#cite_ref-cmdlets_21-2
+ 548. http://msdn2.microsoft.com/en-us/library/ms714395.aspx
+ 549. https://en.wikipedia.org/wiki/PowerShell#cite_ref-firstcmdlet_22-0
+ 550. http://msdn2.microsoft.com/en-us/library/ms714622.aspx
+ 551. https://en.wikipedia.org/wiki/PowerShell#cite_ref-23
+ 552. https://technet.microsoft.com/en-us/library/hh852690.aspx
+ 553. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 554. https://en.wikipedia.org/wiki/Microsoft
+ 555. https://en.wikipedia.org/wiki/PowerShell#cite_ref-24
+ 556. https://msdn.microsoft.com/en-us/library/ms714395%28v=vs.85%29.aspx
+ 557. https://en.wikipedia.org/wiki/MSDN
+ 558. https://en.wikipedia.org/wiki/Microsoft
+ 559. https://en.wikipedia.org/wiki/PowerShell#cite_ref-25
+ 560. http://msdn2.microsoft.com/en-us/library/ms714663.aspx
+ 561. https://en.wikipedia.org/wiki/PowerShell#cite_ref-26
+ 562. http://msdn2.microsoft.com/en-us/library/ms714597.aspx
+ 563. https://en.wikipedia.org/wiki/PowerShell#cite_ref-27
+ 564. http://technet.microsoft.com/en-us/library/dd347723.aspx
+ 565. https://en.wikipedia.org/wiki/PowerShell#cite_ref-28
+ 566. http://technet.microsoft.com/en-us/library/ee176927.aspx
+ 567. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 568. https://en.wikipedia.org/wiki/Microsoft
+ 569. https://en.wikipedia.org/wiki/PowerShell#cite_ref-29
+ 570. http://www.microsoft.com/technet/technetmag/issues/2007/07/PowerShell/default.aspx
+ 571. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 572. https://en.wikipedia.org/wiki/Microsoft
+ 573. https://en.wikipedia.org/wiki/PowerShell#cite_ref-30
+ 574. https://web.archive.org/web/20070819233213/http://msdn2.microsoft.com/en-us/library/aa347685.aspx
+ 575. http://msdn2.microsoft.com/en-us/library/aa347685.aspx
+ 576. https://en.wikipedia.org/wiki/PowerShell#cite_ref-31
+ 577. http://blogs.msdn.com/powershell/archive/2006/04/30/586973.aspx
+ 578. https://en.wikipedia.org/wiki/PowerShell#cite_ref-32
+ 579. http://blogs.msdn.com/powershell/archive/2006/06/21/641738.aspx
+ 580. https://en.wikipedia.org/wiki/PowerShell#cite_ref-33
+ 581. https://technet.microsoft.com/en-us/library/hh847902.aspx
+ 582. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 583. https://en.wikipedia.org/wiki/Microsoft
+ 584. https://en.wikipedia.org/wiki/PowerShell#cite_ref-34
+ 585. https://technet.microsoft.com/en-us/library/hh847810.aspx
+ 586. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 587. https://en.wikipedia.org/wiki/Microsoft
+ 588. https://en.wikipedia.org/wiki/PowerShell#cite_ref-about_Format.ps1xml_35-0
+ 589. https://en.wikipedia.org/wiki/PowerShell#cite_ref-about_Format.ps1xml_35-1
+ 590. https://technet.microsoft.com/en-us/library/hh847831.aspx
+ 591. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 592. https://en.wikipedia.org/wiki/Microsoft
+ 593. https://en.wikipedia.org/wiki/PowerShell#cite_ref-lambda1_36-0
+ 594. http://defndo.com/powershell-code-blocks-and-anonymous-functions/
+ 595. https://en.wikipedia.org/wiki/PowerShell#cite_ref-37
+ 596. http://www.computerperformance.co.uk/powershell/powershell_variables.htm
+ 597. https://en.wikipedia.org/wiki/PowerShell#cite_ref-38
+ 598. http://technet.microsoft.com/en-us/library/ee692684.aspx
+ 599. https://en.wikipedia.org/wiki/PowerShell#cite_ref-39
+ 600. http://www.powershellmagazine.com/2013/05/20/converting-to-size-units-kb-mbgbtb-and-pb-without-using-powershell-multipliers/
+ 601. https://en.wikipedia.org/wiki/PowerShell#cite_ref-about_Functions_40-0
+ 602. https://en.wikipedia.org/wiki/PowerShell#cite_ref-about_Functions_40-1
+ 603. https://en.wikipedia.org/wiki/PowerShell#cite_ref-about_Functions_40-2
+ 604. http://technet.microsoft.com/en-us/library/hh847829.aspx
+ 605. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 606. https://en.wikipedia.org/wiki/Microsoft
+ 607. https://en.wikipedia.org/wiki/PowerShell#cite_ref-dotnet_41-0
+ 608. https://en.wikipedia.org/wiki/PowerShell#cite_ref-dotnet_41-1
+ 609. http://msdn.microsoft.com/msdnmag/issues/07/05/TestRun/default.aspx
+ 610. https://en.wikipedia.org/wiki/PowerShell#cite_ref-42
+ 611. http://windowsitpro.com/powershell/powershell-got-smart-about-smart-quotes
+ 612. https://en.wikipedia.org/wiki/Windows_IT_Pro
+ 613. https://en.wikipedia.org/wiki/Penton_Media
+ 614. https://en.wikipedia.org/wiki/PowerShell#cite_ref-43
+ 615. http://huddledmasses.org/trap-exception-in-powershell
+ 616. https://en.wikipedia.org/wiki/PowerShell#cite_ref-44
+ 617. http://www.microsoft.com/technet/scriptcenter/topics/winpsh/manual/run.mspx
+ 618. https://en.wikipedia.org/wiki/PowerShell#cite_ref-45
+ 619. http://technet.microsoft.com/en-us/library/hh847874.aspx
+ 620. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 621. https://en.wikipedia.org/wiki/Microsoft
+ 622. https://en.wikipedia.org/wiki/PowerShell#cite_ref-46
+ 623. http://blogs.msdn.com/b/powershell/archive/2006/12/15/kb-1024-vs-1000.aspx
+ 624. https://en.wikipedia.org/wiki/PowerShell#cite_ref-47
+ 625. https://msdn.microsoft.com/en-us/powershell/dsc/overview
+ 626. https://en.wikipedia.org/wiki/PowerShell#cite_ref-48
+ 627. http://blogs.msdn.com/b/powershell/archive/2006/11/14/windows-powershell-1-0-released.aspx
+ 628. https://en.wikipedia.org/wiki/Microsoft
+ 629. https://en.wikipedia.org/wiki/PowerShell#cite_ref-49
+ 630. http://blogs.msdn.com/powershell/archive/2008/10/28/powershell-will-be-installed-by-default-on-windows-server-08-r2-ws08r2-and-windows-7-w7.aspx
+ 631. https://en.wikipedia.org/wiki/Microsoft
+ 632. https://en.wikipedia.org/wiki/PowerShell#cite_ref-50
+ 633. http://blogs.msdn.com/powershell/archive/2009/10/27/windows-management-framework-is-here.aspx
+ 634. https://en.wikipedia.org/wiki/PowerShell#cite_ref-51
+ 635. http://support.microsoft.com/kb/968929
+ 636. https://en.wikipedia.org/wiki/PowerShell#cite_ref-52
+ 637. http://blogs.msdn.com/powershell/archive/2008/10/29/574-reasons-why-we-are-so-proud-and-optimistic-about-w7-and-ws08r2.aspx
+ 638. https://en.wikipedia.org/wiki/Microsoft
+ 639. https://en.wikipedia.org/wiki/PowerShell#cite_ref-53
+ 640. https://web.archive.org/web/20081013065033/http://channel9.msdn.com/pdc2008/ES24/
+ 641. http://channel9.msdn.com/pdc2008/ES24/
+ 642. https://en.wikipedia.org/wiki/PowerShell#cite_ref-54
+ 643. http://blogs.msdn.com/powershell/archive/2007/11/06/what-s-new-in-ctp-of-powershell-2-0.aspx
+ 644. https://en.wikipedia.org/wiki/PowerShell#cite_ref-55
+ 645. https://web.archive.org/web/20080506150324/http://www.microsoft.com/downloads/details.aspx?FamilyID=7c8051c2-9bfc-4c81-859d-0864979fa403&DisplayLang=en
+ 646. http://www.microsoft.com/downloads/details.aspx?FamilyId=7C8051C2-9BFC-4C81-859D-0864979FA403&displaylang=en
+ 647. https://en.wikipedia.org/wiki/PowerShell#cite_ref-56
+ 648. http://activexperts.com/admin/powershell/ps1vs2/
+ 649. https://en.wikipedia.org/wiki/PowerShell#cite_ref-57
+ 650. http://blogs.msdn.com/powershell/archive/2008/10/14/gogrid-snap-in-managing-cloud-services-with-powershell.aspx
+ 651. https://en.wikipedia.org/wiki/Microsoft
+ 652. https://en.wikipedia.org/wiki/PowerShell#cite_ref-58
+ 653. http://blogs.msdn.com/powershell/archive/2008/10/18/emit-xml.aspx
+ 654. https://en.wikipedia.org/wiki/Microsoft
+ 655. https://en.wikipedia.org/wiki/PowerShell#cite_ref-59
+ 656. http://blogs.msdn.com/powershell/archive/2008/06/14/block-comments-in-v2.aspx
+ 657. https://en.wikipedia.org/wiki/Microsoft
+ 658. https://en.wikipedia.org/wiki/PowerShell#cite_ref-60
+ 659. http://tfl09.blogspot.co.uk/2012/08/powershell-version-3-is-rtm.html
+ 660. https://en.wikipedia.org/wiki/PowerShell#cite_ref-WMF3_61-0
+ 661. https://en.wikipedia.org/wiki/PowerShell#cite_ref-WMF3_61-1
+ 662. https://en.wikipedia.org/wiki/PowerShell#cite_ref-WMF3_61-2
+ 663. http://www.microsoft.com/en-us/download/details.aspx?id=34595
+ 664. https://en.wikipedia.org/wiki/Microsoft
+ 665. https://en.wikipedia.org/wiki/PowerShell#cite_ref-62
+ 666. http://blogs.msdn.com/b/powershell/archive/2011/12/02/windows-management-framework-3-0-community-technology-preview-ctp-2-available-for-download.aspx
+ 667. https://en.wikipedia.org/wiki/Microsoft
+ 668. https://en.wikipedia.org/wiki/PowerShell#cite_ref-63
+ 669. http://blogs.msdn.com/b/microsoft_press/archive/2012/11/13/free-ebook-introducing-windows-8-an-overview-for-it-professionals-final-edition.aspx
+ 670. https://en.wikipedia.org/wiki/Microsoft_Press
+ 671. https://en.wikipedia.org/wiki/International_Standard_Book_Number
+ 672. https://en.wikipedia.org/wiki/Special:BookSources/978-0-7356-7050-1
+ 673. https://en.wikipedia.org/wiki/PowerShell#cite_ref-64
+ 674. http://blogs.msdn.com/b/powershell/archive/2013/10/25/windows-management-framework-4-0-is-now-available.aspx
+ 675. https://en.wikipedia.org/wiki/Microsoft
+ 676. https://en.wikipedia.org/wiki/PowerShell#cite_ref-65
+ 677. http://www.powershellmagazine.com/2013/06/25/new-features-in-windows-powershell-4-0/
+ 678. https://en.wikipedia.org/wiki/PowerShell#cite_ref-66
+ 679. http://channel9.msdn.com/Events/TechEd/NorthAmerica/2013/MDC-B302#fbid=sBK5uHH2bcL
+ 680. https://en.wikipedia.org/wiki/Channel_9_(Microsoft)
+ 681. https://en.wikipedia.org/wiki/Microsoft
+ 682. https://en.wikipedia.org/wiki/PowerShell#cite_ref-67
+ 683. http://blogs.splunk.com/2013/06/07/thoughts-from-microsoft-teched-north-america/
+ 684. https://en.wikipedia.org/wiki/Splunk
+ 685. https://en.wikipedia.org/wiki/PowerShell#cite_ref-68
+ 686. https://blogs.msdn.microsoft.com/powershell/2016/02/24/windows-management-framework-wmf-5-0-rtm-packages-has-been-republished/
+ 687. https://en.wikipedia.org/wiki/Microsoft
+ 688. https://en.wikipedia.org/wiki/PowerShell#cite_ref-69
+ 689. https://github.com/OneGet/oneget/wiki/Q-and-A
+ 690. https://en.wikipedia.org/wiki/PowerShell#cite_ref-Snover_2014-04-03_70-0
+ 691. http://blogs.technet.com/b/windowsserver/archive/2014/04/03/windows-management-framework-v5-preview.aspx
+ 692. https://en.wikipedia.org/wiki/Microsoft
+ 693. https://en.wikipedia.org/wiki/PowerShell#cite_ref-71
+ 694. http://www.powershellmagazine.com/2016/08/02/pstip-new-powershell-commands-in-windows-10-anniversary-update/
+ 695. https://en.wikipedia.org/wiki/PowerShell#cite_ref-72
+ 696. https://technet.microsoft.com/en-us/library/mt651681.aspx
+ 697. https://en.wikipedia.org/wiki/PowerShell#cite_ref-73
+ 698. https://technet.microsoft.com/en-us/library/hh849808.aspx
+ 699. https://en.wikipedia.org/wiki/Microsoft
+ 700. https://en.wikipedia.org/wiki/PowerShell#cite_ref-79
+ 701. http://technet.microsoft.com/en-us/library/hh847841.aspx
+ 702. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 703. https://en.wikipedia.org/wiki/Microsoft
+ 704. https://en.wikipedia.org/wiki/PowerShell#cite_ref-80
+ 705. http://technet.microsoft.com/en-us/library/hh849919.aspx
+ 706. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 707. https://en.wikipedia.org/wiki/Microsoft
+ 708. https://en.wikipedia.org/wiki/PowerShell#cite_ref-81
+ 709. http://technet.microsoft.com/en-us/library/hh847804.aspx
+ 710. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 711. https://en.wikipedia.org/wiki/Microsoft
+ 712. https://en.wikipedia.org/wiki/PowerShell#cite_ref-82
+ 713. http://technet.microsoft.com/en-us/library/hh847881.aspx
+ 714. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 715. https://en.wikipedia.org/wiki/Microsoft
+ 716. https://en.wikipedia.org/wiki/PowerShell#cite_ref-83
+ 717. http://technet.microsoft.com/en-us/library/hh849916.aspx
+ 718. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 719. https://en.wikipedia.org/wiki/Microsoft
+ 720. https://en.wikipedia.org/wiki/PowerShell#cite_ref-84
+ 721. http://technet.microsoft.com/en-us/library/hh849706.aspx
+ 722. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 723. https://en.wikipedia.org/wiki/Microsoft
+ 724. https://en.wikipedia.org/wiki/PowerShell#cite_ref-85
+ 725. http://technet.microsoft.com/en-us/library/hh847838.aspx
+ 726. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 727. https://en.wikipedia.org/wiki/Microsoft
+ 728. https://en.wikipedia.org/wiki/PowerShell#cite_ref-86
+ 729. http://www.microsoft.com/downloads/details.aspx?familyid=35fc4205-792b-4306-8e4b-0de9cce72172&displaylang=en
+ 730. https://en.wikipedia.org/wiki/PowerShell#cite_ref-87
+ 731. http://www.codeplex.com/PowerTools
+ 732. https://en.wikipedia.org/wiki/PowerShell#cite_ref-88
+ 733. http://www-1.ibm.com/support/docview.wss?rs=171&uid=swg24017698
+ 734. https://en.wikipedia.org/wiki/PowerShell#cite_ref-89
+ 735. http://www.quest.com/powershell/activeroles-server.aspx
+ 736. https://en.wikipedia.org/wiki/PowerShell#cite_ref-90
+ 737. http://www.specopssoft.com/powershell/
+ 738. https://en.wikipedia.org/wiki/PowerShell#cite_ref-91
+ 739. https://www.vmware.com/go/PowerCLI
+ 740. https://en.wikipedia.org/wiki/PowerShell#cite_ref-92
+ 741. http://blogs.msdn.com/powershell/archive/2008/07/03/iis7-powershell-provider-tech-preview-2.aspx
+ 742. https://en.wikipedia.org/wiki/PowerShell#cite_ref-93
+ 743. http://blogs.msdn.com/powershell/archive/2009/06/14/kudos-to-the-win7-diagnostics-team.aspx
+ 744. https://en.wikipedia.org/wiki/PowerShell#cite_ref-94
+ 745. http://blogs.technet.com/b/mniehaus/archive/2009/07/10/mdt-2010-new-feature-16-powershell-support.aspx
+ 746. https://en.wikipedia.org/wiki/PowerShell#cite_ref-95
+ 747. http://blogs.msdn.com/b/powershell/archive/2010/06/16/kudos-to-netapp-for-data-ontap-powershell-toolkit.aspx
+ 748. https://en.wikipedia.org/wiki/PowerShell#cite_ref-96
+ 749. http://community.netapp.com/t5/Microsoft-Cloud-and-Virtualization-Discussions/NetApp-PowerShell-Toolkit-4-2-released/m-p/120539
+ 750. https://en.wikipedia.org/wiki/PowerShell#cite_ref-97
+ 751. http://blogs.msdn.com/b/powershell/archive/2007/06/28/heterogeneous-job-scheduling-with-powershell.aspx
+ 752. https://en.wikipedia.org/wiki/PowerShell#cite_ref-98
+ 753. http://uiautomation.codeplex.com/
+ 754. https://en.wikipedia.org/wiki/PowerShell#cite_ref-99
+ 755. http://en.community.dell.com/techcenter/storage/w/wiki/2688.aspx
+ 756. https://en.wikipedia.org/wiki/PowerShell#cite_ref-100
+ 757. https://de.wikipedia.org/wiki/LOGINventory
+ 758. https://en.wikipedia.org/wiki/PowerShell#cite_ref-101
+ 759. http://sepsx.codeplex.com/
+ 760. https://en.wikipedia.org/wiki/PowerShell#cite_ref-pash_102-0
+ 761. https://en.wikipedia.org/wiki/PowerShell#cite_ref-pash_102-1
+ 762. http://pash.sourceforge.net/
+ 763. https://en.wikipedia.org/wiki/SourceForge
+ 764. https://en.wikipedia.org/wiki/Dice_Holdings,_Inc.
+ 765. https://en.wikipedia.org/wiki/PowerShell#cite_ref-pash_project_103-0
+ 766. https://github.com/Pash-Project/Pash/
+ 767. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=21
+ 768. https://en.wikipedia.org/wiki/O%27Reilly_Media
+ 769. https://en.wikipedia.org/wiki/International_Standard_Book_Number
+ 770. https://en.wikipedia.org/wiki/Special:BookSources/0-596-10009-4
+ 771. https://en.wikipedia.org/wiki/O%27Reilly_Media
+ 772. https://en.wikipedia.org/wiki/International_Standard_Book_Number
+ 773. https://en.wikipedia.org/wiki/Special:BookSources/0-596-52813-2
+ 774. https://en.wikipedia.org/wiki/O%27Reilly_Media
+ 775. https://en.wikipedia.org/wiki/International_Standard_Book_Number
+ 776. https://en.wikipedia.org/wiki/Special:BookSources/0-596-52849-3
+ 777. https://en.wikipedia.org/wiki/Wrox_Press
+ 778. https://en.wikipedia.org/wiki/International_Standard_Book_Number
+ 779. https://en.wikipedia.org/wiki/Special:BookSources/0-471-94693-1
+ 780. https://en.wikipedia.org/wiki/Wrox_Press
+ 781. https://en.wikipedia.org/wiki/International_Standard_Book_Number
+ 782. https://en.wikipedia.org/wiki/Special:BookSources/0-470-17393-9
+ 783. https://en.wikipedia.org/wiki/Pearson_Education
+ 784. https://en.wikipedia.org/wiki/International_Standard_Book_Number
+ 785. https://en.wikipedia.org/wiki/Special:BookSources/978-0-672-32988-3
+ 786. https://en.wikipedia.org/wiki/International_Standard_Book_Number
+ 787. https://en.wikipedia.org/wiki/Special:BookSources/978-0-9821314-2-8
+ 788. https://en.wikipedia.org/wiki/O%27Reilly_Media
+ 789. https://en.wikipedia.org/wiki/International_Standard_Book_Number
+ 790. https://en.wikipedia.org/wiki/Special:BookSources/1-4493-2270-0
+ 791. https://en.wikipedia.org/wiki/Microsoft_Press
+ 792. https://en.wikipedia.org/wiki/International_Standard_Book_Number
+ 793. https://en.wikipedia.org/wiki/Special:BookSources/978-0-7356-6339-8
+ 794. https://en.wikipedia.org/wiki/Microsoft_Press
+ 795. https://en.wikipedia.org/wiki/International_Standard_Book_Number
+ 796. https://en.wikipedia.org/wiki/Special:BookSources/978-0-7356-6649-8
+ 797. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=22
+ 798. https://en.wikiversity.org/wiki/Windows_PowerShell
+ 799. http://microsoft.com/powershell
+ 800. https://github.com/PowerShell/PowerShell
+ 801. https://en.wikipedia.org/wiki/GitHub
+ 802. http://social.technet.microsoft.com/wiki/contents/articles/183.windows-powershell-survival-guide-en-us.aspx
+ 803. https://en.wikipedia.org/wiki/Microsoft_TechNet
+ 804. https://en.wikipedia.org/wiki/Template:Microsoft_Windows_components
+ 805. https://en.wikipedia.org/wiki/Template_talk:Microsoft_Windows_components
+ 806. https://en.wikipedia.org/w/index.php?title=Template:Microsoft_Windows_components&action=edit
+ 807. https://en.wikipedia.org/wiki/List_of_Microsoft_Windows_components
+ 808. https://en.wikipedia.org/wiki/Cmd.exe
+ 809. https://en.wikipedia.org/wiki/Control_Panel_(Windows)
+ 810. https://en.wikipedia.org/wiki/List_of_Control_Panel_applets_(Windows)
+ 811. https://en.wikipedia.org/wiki/Device_Manager
+ 812. https://en.wikipedia.org/wiki/Disk_Cleanup
+ 813. https://en.wikipedia.org/wiki/Disk_Defragmenter_(Windows)
+ 814. https://en.wikipedia.org/wiki/Driver_Verifier
+ 815. https://en.wikipedia.org/wiki/Event_Viewer
+ 816. https://en.wikipedia.org/wiki/IExpress
+ 817. https://en.wikipedia.org/wiki/Microsoft_Management_Console
+ 818. https://en.wikipedia.org/wiki/Netsh
+ 819. https://en.wikipedia.org/wiki/Recovery_Console
+ 820. https://en.wikipedia.org/wiki/Resource_Monitor
+ 821. https://en.wikipedia.org/wiki/Microsoft_ScanDisk
+ 822. https://en.wikipedia.org/wiki/Settings_(Windows)
+ 823. https://en.wikipedia.org/wiki/Sysprep
+ 824. https://en.wikipedia.org/wiki/MSConfig
+ 825. https://en.wikipedia.org/wiki/System_File_Checker
+ 826. https://en.wikipedia.org/wiki/System_Policy_Editor
+ 827. https://en.wikipedia.org/wiki/System_Restore
+ 828. https://en.wikipedia.org/wiki/Task_Manager_(Windows)
+ 829. https://en.wikipedia.org/wiki/Windows_Error_Reporting
+ 830. https://en.wikipedia.org/wiki/Windows_Installer
+ 831. https://en.wikipedia.org/wiki/Windows_Update
+ 832. https://en.wikipedia.org/wiki/Windows_Insider
+ 833. https://en.wikipedia.org/wiki/Windows_Recovery_Environment
+ 834. https://en.wikipedia.org/wiki/Windows_Management_Instrumentation
+ 835. https://en.wikipedia.org/wiki/File:Windows_logo_%E2%80%93_2012_(dark_blue).svg
+ 836. https://en.wikipedia.org/wiki/Computer_program
+ 837. https://en.wikipedia.org/wiki/Calculator_(Windows)
+ 838. https://en.wikipedia.org/wiki/Calendar_(Windows)
+ 839. https://en.wikipedia.org/wiki/Character_Map_(Windows)
+ 840. https://en.wikipedia.org/wiki/Cortana_(software)
+ 841. https://en.wikipedia.org/wiki/DVD_Player_(Windows)
+ 842. https://en.wikipedia.org/wiki/Microsoft_Edge
+ 843. https://en.wikipedia.org/wiki/Windows_Fax_and_Scan
+ 844. https://en.wikipedia.org/wiki/Groove_Music
+ 845. https://en.wikipedia.org/wiki/Magnifier_(Windows)
+ 846. https://en.wikipedia.org/wiki/Mail_(Windows)
+ 847. https://en.wikipedia.org/wiki/Bing_Maps#Map_apps
+ 848. https://en.wikipedia.org/wiki/MSN#Current_suite_of_apps
+ 849. https://en.wikipedia.org/wiki/Windows_Movie_Maker
+ 850. https://en.wikipedia.org/wiki/Microsoft_Movies_%26_TV
+ 851. https://en.wikipedia.org/wiki/Windows_Mobility_Center
+ 852. https://en.wikipedia.org/wiki/Microsoft_Narrator
+ 853. https://en.wikipedia.org/wiki/Microsoft_Notepad
+ 854. https://en.wikipedia.org/wiki/OneDrive
+ 855. https://en.wikipedia.org/wiki/Microsoft_OneNote
+ 856. https://en.wikipedia.org/wiki/Microsoft_Paint
+ 857. https://en.wikipedia.org/wiki/People_(Windows)
+ 858. https://en.wikipedia.org/wiki/Windows_Photo_Viewer
+ 859. https://en.wikipedia.org/wiki/Photos_(Windows)
+ 860. https://en.wikipedia.org/wiki/Windows_Remote_Assistance
+ 861. https://en.wikipedia.org/wiki/Snipping_Tool
+ 862. https://en.wikipedia.org/wiki/Microsoft_Solitaire_Collection
+ 863. https://en.wikipedia.org/wiki/Sound_Recorder_(Windows)
+ 864. https://en.wikipedia.org/wiki/Windows_Speech_Recognition
+ 865. https://en.wikipedia.org/wiki/Skype
+ 866. https://en.wikipedia.org/wiki/Sticky_Notes
+ 867. https://en.wikipedia.org/wiki/Windows_Store
+ 868. https://en.wikipedia.org/wiki/Microsoft_Wallet
+ 869. https://en.wikipedia.org/wiki/Windows_To_Go
+ 870. https://en.wikipedia.org/wiki/WordPad
+ 871. https://en.wikipedia.org/wiki/Xbox_app
+ 872. https://en.wikipedia.org/wiki/Windows_shell
+ 873. https://en.wikipedia.org/wiki/Action_Center
+ 874. https://en.wikipedia.org/wiki/Windows_Aero
+ 875. https://en.wikipedia.org/wiki/AutoPlay
+ 876. https://en.wikipedia.org/wiki/AutoRun
+ 877. https://en.wikipedia.org/wiki/ClearType
+ 878. https://en.wikipedia.org/wiki/File_Explorer
+ 879. https://en.wikipedia.org/wiki/Windows_Search
+ 880. https://en.wikipedia.org/wiki/Indexing_Service
+ 881. https://en.wikipedia.org/wiki/IFilter
+ 882. https://en.wikipedia.org/wiki/Virtual_folder#Windows
+ 883. https://en.wikipedia.org/wiki/Windows_Shell_namespace
+ 884. https://en.wikipedia.org/wiki/Special_folder
+ 885. https://en.wikipedia.org/wiki/Start_menu
+ 886. https://en.wikipedia.org/wiki/Taskbar
+ 887. https://en.wikipedia.org/wiki/Task_View
+ 888. https://en.wikipedia.org/wiki/Windows_XP_visual_styles
+ 889. https://en.wikipedia.org/wiki/Windows_service
+ 890. https://en.wikipedia.org/wiki/Service_Control_Manager
+ 891. https://en.wikipedia.org/wiki/Background_Intelligent_Transfer_Service
+ 892. https://en.wikipedia.org/wiki/Common_Log_File_System
+ 893. https://en.wikipedia.org/wiki/Multimedia_Class_Scheduler_Service
+ 894. https://en.wikipedia.org/wiki/Shadow_Copy
+ 895. https://en.wikipedia.org/wiki/Windows_Task_Scheduler
+ 896. https://en.wikipedia.org/wiki/Windows_Error_Reporting
+ 897. https://en.wikipedia.org/wiki/Wireless_Zero_Configuration
+ 898. https://en.wikipedia.org/wiki/File_system
+ 899. https://en.wikipedia.org/wiki/ISO_9660
+ 900. https://en.wikipedia.org/wiki/Distributed_File_System_(Microsoft)
+ 901. https://en.wikipedia.org/wiki/ExFAT
+ 902. https://en.wikipedia.org/wiki/Installable_File_System
+ 903. https://en.wikipedia.org/wiki/File_Allocation_Table
+ 904. https://en.wikipedia.org/wiki/NTFS
+ 905. https://en.wikipedia.org/wiki/Hard_link
+ 906. https://en.wikipedia.org/wiki/NTFS_junction_point
+ 907. https://en.wikipedia.org/wiki/NTFS_volume_mount_point
+ 908. https://en.wikipedia.org/wiki/NTFS_reparse_point
+ 909. https://en.wikipedia.org/wiki/NTFS_symbolic_link
+ 910. https://en.wikipedia.org/wiki/Transactional_NTFS
+ 911. https://en.wikipedia.org/wiki/Encrypting_File_System
+ 912. https://en.wikipedia.org/wiki/ReFS
+ 913. https://en.wikipedia.org/wiki/Universal_Disk_Format
+ 914. https://en.wikipedia.org/wiki/WinFS
+ 915. https://en.wikipedia.org/wiki/Server_(computing)
+ 916. https://en.wikipedia.org/wiki/Windows_domain
+ 917. https://en.wikipedia.org/wiki/Active_Directory
+ 918. https://en.wikipedia.org/wiki/Microsoft_DNS
+ 919. https://en.wikipedia.org/wiki/Group_Policy
+ 920. https://en.wikipedia.org/wiki/Roaming_user_profile
+ 921. https://en.wikipedia.org/wiki/Folder_redirection
+ 922. https://en.wikipedia.org/wiki/Microsoft_Distributed_Transaction_Coordinator
+ 923. https://en.wikipedia.org/wiki/Microsoft_Message_Queuing
+ 924. https://en.wikipedia.org/wiki/Windows_Media_Services
+ 925. https://en.wikipedia.org/wiki/Active_Directory_Rights_Management_Services
+ 926. https://en.wikipedia.org/wiki/Internet_Information_Services
+ 927. https://en.wikipedia.org/wiki/Remote_Desktop_Services
+ 928. https://en.wikipedia.org/wiki/Windows_Server_Update_Services
+ 929. https://en.wikipedia.org/wiki/Microsoft_SharePoint
+ 930. https://en.wikipedia.org/wiki/Network_Access_Protection
+ 931. https://en.wikipedia.org/wiki/Microsoft_Personal_Web_Server
+ 932. https://en.wikipedia.org/wiki/File_Replication_Service
+ 933. https://en.wikipedia.org/wiki/Remote_Differential_Compression
+ 934. https://en.wikipedia.org/wiki/Print_Services_for_UNIX
+ 935. https://en.wikipedia.org/wiki/Remote_Installation_Services
+ 936. https://en.wikipedia.org/wiki/Windows_Deployment_Services
+ 937. https://en.wikipedia.org/wiki/Windows_System_Resource_Manager
+ 938. https://en.wikipedia.org/wiki/Hyper-V
+ 939. https://en.wikipedia.org/wiki/Server_Core
+ 940. https://en.wikipedia.org/wiki/Software_architecture
+ 941. https://en.wikipedia.org/wiki/Architecture_of_Windows_NT
+ 942. https://en.wikipedia.org/wiki/Windows_startup_process
+ 943. https://en.wikipedia.org/wiki/Client/Server_Runtime_Subsystem
+ 944. https://en.wikipedia.org/wiki/Desktop_Window_Manager
+ 945. https://en.wikipedia.org/wiki/Portable_Executable
+ 946. https://en.wikipedia.org/wiki/.exe
+ 947. https://en.wikipedia.org/wiki/Dynamic-link_library
+ 948. https://en.wikipedia.org/wiki/Enhanced_Write_Filter
+ 949. https://en.wikipedia.org/wiki/Graphics_Device_Interface
+ 950. https://en.wikipedia.org/wiki/Hal.dll
+ 951. https://en.wikipedia.org/wiki/I/O_request_packet
+ 952. https://en.wikipedia.org/wiki/Windows_Imaging_Format
+ 953. https://en.wikipedia.org/wiki/Kernel_Transaction_Manager
+ 954. https://en.wikipedia.org/wiki/Microsoft_Windows_library_files
+ 955. https://en.wikipedia.org/wiki/Logical_Disk_Manager
+ 956. https://en.wikipedia.org/wiki/Local_Security_Authority_Subsystem_Service
+ 957. https://en.wikipedia.org/wiki/MinWin
+ 958. https://en.wikipedia.org/wiki/NTLDR
+ 959. https://en.wikipedia.org/wiki/Ntoskrnl.exe
+ 960. https://en.wikipedia.org/wiki/Object_Manager_(Windows)
+ 961. https://en.wikipedia.org/wiki/Open_XML_Paper_Specification
+ 962. https://en.wikipedia.org/wiki/Windows_Registry
+ 963. https://en.wikipedia.org/wiki/Windows_Resource_Protection
+ 964. https://en.wikipedia.org/wiki/Security_Account_Manager
+ 965. https://en.wikipedia.org/wiki/Server_Message_Block
+ 966. https://en.wikipedia.org/wiki/Shadow_Copy
+ 967. https://en.wikipedia.org/wiki/Session_Manager_Subsystem
+ 968. https://en.wikipedia.org/wiki/System_Idle_Process
+ 969. https://en.wikipedia.org/wiki/Windows_USER
+ 970. https://en.wikipedia.org/wiki/Windows_Hardware_Error_Architecture
+ 971. https://en.wikipedia.org/wiki/Win32_console
+ 972. https://en.wikipedia.org/wiki/Winlogon
+ 973. https://en.wikipedia.org/wiki/Security_and_Maintenance
+ 974. https://en.wikipedia.org/wiki/BitLocker
+ 975. https://en.wikipedia.org/wiki/Data_Execution_Prevention
+ 976. https://en.wikipedia.org/wiki/Microsoft_Family_Safety
+ 977. https://en.wikipedia.org/wiki/Kernel_Patch_Protection
+ 978. https://en.wikipedia.org/wiki/Mandatory_Integrity_Control
+ 979. https://en.wikipedia.org/wiki/Protected_Media_Path
+ 980. https://en.wikipedia.org/wiki/User_Account_Control
+ 981. https://en.wikipedia.org/wiki/User_Interface_Privilege_Isolation
+ 982. https://en.wikipedia.org/wiki/Windows_Defender
+ 983. https://en.wikipedia.org/wiki/Windows_Firewall
+ 984. https://en.wikipedia.org/wiki/COMMAND.COM
+ 985. https://en.wikipedia.org/wiki/Virtual_DOS_machine
+ 986. https://en.wikipedia.org/wiki/Windows_on_Windows
+ 987. https://en.wikipedia.org/wiki/WoW64
+ 988. https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
+ 989. https://en.wikipedia.org/wiki/Application_programming_interface
+ 990. https://en.wikipedia.org/wiki/Active_Scripting
+ 991. https://en.wikipedia.org/wiki/Windows_Script_Host
+ 992. https://en.wikipedia.org/wiki/VBScript
+ 993. https://en.wikipedia.org/wiki/JScript
+ 994. https://en.wikipedia.org/wiki/Component_Object_Model
+ 995. https://en.wikipedia.org/wiki/ActiveX
+ 996. https://en.wikipedia.org/wiki/ActiveX_Document
+ 997. https://en.wikipedia.org/wiki/COM_Structured_Storage
+ 998. https://en.wikipedia.org/wiki/Distributed_Component_Object_Model
+ 999. https://en.wikipedia.org/wiki/Object_Linking_and_Embedding
+1000. https://en.wikipedia.org/wiki/OLE_Automation
+1001. https://en.wikipedia.org/wiki/Microsoft_Transaction_Server
+1002. https://en.wikipedia.org/wiki/DirectX
+1003. https://en.wikipedia.org/wiki/.NET_Framework
+1004. https://en.wikipedia.org/wiki/Windows_Holographic
+1005. https://en.wikipedia.org/wiki/Windows_Runtime
+1006. https://en.wikipedia.org/wiki/Universal_Windows_Platform
+1007. https://en.wikipedia.org/wiki/PC_game
+1008. https://en.wikipedia.org/wiki/Full_Tilt!_Pinball#3D_Pinball_for_Windows_.E2.80.93_Space_Cadet
+1009. https://en.wikipedia.org/wiki/Chess_Titans
+1010. https://en.wikipedia.org/wiki/Microsoft_FreeCell
+1011. https://en.wikipedia.org/wiki/Microsoft_Hearts
+1012. https://en.wikipedia.org/wiki/Hover!
+1013. https://en.wikipedia.org/wiki/InkBall
+1014. https://en.wikipedia.org/wiki/Windows_Ultimate_Extras
+1015. https://en.wikipedia.org/wiki/Microsoft_Mahjong
+1016. https://en.wikipedia.org/wiki/Microsoft_Minesweeper
+1017. https://en.wikipedia.org/wiki/Purble_Place
+1018. https://en.wikipedia.org/wiki/Reversi
+1019. https://en.wikipedia.org/wiki/Microsoft_Solitaire
+1020. https://en.wikipedia.org/wiki/Microsoft_Spider_Solitaire
+1021. https://en.wikipedia.org/wiki/Microsoft_Tinker
+1022. https://en.wikipedia.org/wiki/Computer_program
+1023. https://en.wikipedia.org/wiki/ActiveMovie
+1024. https://en.wikipedia.org/wiki/Windows_Anytime_Upgrade
+1025. https://en.wikipedia.org/wiki/Windows_Address_Book
+1026. https://en.wikipedia.org/wiki/Backup_and_Restore
+1027. https://en.wikipedia.org/wiki/Cardfile
+1028. https://en.wikipedia.org/wiki/Windows_CardSpace
+1029. https://en.wikipedia.org/wiki/Windows_Contacts
+1030. https://en.wikipedia.org/wiki/Windows_Desktop_Gadgets
+1031. https://en.wikipedia.org/wiki/Microsoft_Diagnostics
+1032. https://en.wikipedia.org/wiki/DriveSpace
+1033. https://en.wikipedia.org/wiki/Windows_DVD_Maker
+1034. https://en.wikipedia.org/wiki/Microsoft_Fax
+1035. https://en.wikipedia.org/wiki/File_Manager_(Windows)
+1036. https://en.wikipedia.org/wiki/MSN_Food_%26_Drink
+1037. https://en.wikipedia.org/wiki/Help_and_Support_Center
+1038. https://en.wikipedia.org/wiki/MSN_Health_%26_Fitness
+1039. https://en.wikipedia.org/wiki/HyperTerminal
+1040. https://en.wikipedia.org/wiki/Internet_Explorer
+1041. https://en.wikipedia.org/wiki/Windows_Journal
+1042. https://en.wikipedia.org/wiki/Microsoft_Internet_Mail_and_News
+1043. https://en.wikipedia.org/wiki/Windows_Media_Center
+1044. https://en.wikipedia.org/wiki/Windows_Media_Player
+1045. https://en.wikipedia.org/wiki/Windows_Meeting_Space
+1046. https://en.wikipedia.org/wiki/Windows_Messaging
+1047. https://en.wikipedia.org/wiki/Windows_Messenger
+1048. https://en.wikipedia.org/wiki/Windows_Mobile_Device_Center
+1049. https://en.wikipedia.org/wiki/Microsoft_NetMeeting
+1050. https://en.wikipedia.org/wiki/NTBackup
+1051. https://en.wikipedia.org/wiki/Outlook_Express
+1052. https://en.wikipedia.org/wiki/MSN_Travel
+1053. https://en.wikipedia.org/wiki/Windows_Photo_Gallery
+1054. https://en.wikipedia.org/wiki/Program_Manager
+1055. https://en.wikipedia.org/wiki/Windows_Easy_Transfer
+1056. https://en.wikipedia.org/wiki/WinHelp
+1057. https://en.wikipedia.org/wiki/Microsoft_Write
+1058. https://en.wikipedia.org/wiki/Windows_File_Protection
+1059. https://en.wikipedia.org/wiki/Media_Control_Interface
+1060. https://en.wikipedia.org/wiki/Next-Generation_Secure_Computing_Base
+1061. https://en.wikipedia.org/wiki/Microsoft_POSIX_subsystem
+1062. https://en.wikipedia.org/wiki/Interix
+1063. https://en.wikipedia.org/wiki/Video_for_Windows
+1064. https://en.wikipedia.org/wiki/Windows_SideShow
+1065. https://en.wikipedia.org/wiki/Windows_Services_for_UNIX
+1066. https://en.wikipedia.org/wiki/Windows_System_Assessment_Tool
+1067. https://en.wikipedia.org/wiki/Template:Windows_commands
+1068. https://en.wikipedia.org/wiki/Template_talk:Windows_commands
+1069. https://en.wikipedia.org/w/index.php?title=Template:Windows_commands&action=edit
+1070. https://en.wikipedia.org/wiki/Microsoft_Windows
+1071. https://en.wikipedia.org/wiki/Command-line_interface
+1072. https://en.wikipedia.org/wiki/Shell_builtin
+1073. https://en.wikipedia.org/wiki/COMMAND.COM
+1074. https://en.wikipedia.org/wiki/Command_Prompt
+1075. https://en.wikipedia.org/wiki/Recovery_Console
+1076. https://en.wikipedia.org/wiki/Cd_(command)
+1077. https://en.wikipedia.org/wiki/Dir_(command)
+1078. https://en.wikipedia.org/wiki/Pushd_and_popd
+1079. https://en.wikipedia.org/wiki/Pushd_and_popd
+1080. https://en.wikipedia.org/wiki/Tree_(command)
+1081. https://en.wikipedia.org/wiki/ATTRIB
+1082. https://en.wikipedia.org/wiki/Cacls
+1083. https://en.wikipedia.org/wiki/Encrypting_File_System
+1084. https://en.wikipedia.org/wiki/Compact_(computing)
+1085. https://en.wikipedia.org/wiki/Copy_(command)
+1086. https://en.wikipedia.org/wiki/Del_(command)
+1087. https://en.wikipedia.org/wiki/Deltree
+1088. https://en.wikipedia.org/wiki/Cabinet_(file_format)
+1089. https://en.wikipedia.org/wiki/Cacls#icacls
+1090. https://en.wikipedia.org/wiki/Cabinet_(file_format)
+1091. https://en.wikipedia.org/wiki/Mkdir
+1092. https://en.wikipedia.org/wiki/Move_(command)
+1093. https://en.wikipedia.org/wiki/Rmdir
+1094. https://en.wikipedia.org/wiki/Recover_(command)
+1095. https://en.wikipedia.org/wiki/Ren_(command)
+1096. https://en.wikipedia.org/wiki/Replace_(command)
+1097. https://en.wikipedia.org/wiki/Rmdir
+1098. https://en.wikipedia.org/wiki/Robocopy
+1099. https://en.wikipedia.org/wiki/XCOPY
+1100. https://en.wikipedia.org/wiki/CHKDSK
+1101. https://en.wikipedia.org/wiki/Convert_(command)
+1102. https://en.wikipedia.org/wiki/Disk_Defragmenter_(Windows)
+1103. https://en.wikipedia.org/wiki/Diskcomp
+1104. https://en.wikipedia.org/wiki/Diskcopy
+1105. https://en.wikipedia.org/wiki/Diskpart
+1106. https://en.wikipedia.org/wiki/Fdisk
+1107. https://en.wikipedia.org/wiki/Format_(command)
+1108. https://en.wikipedia.org/wiki/Label_(command)
+1109. https://en.wikipedia.org/wiki/SUBST
+1110. https://en.wikipedia.org/wiki/Microsoft_ScanDisk
+1111. https://en.wikipedia.org/wiki/SYS_(command)
+1112. https://en.wikipedia.org/wiki/Vol_(command)
+1113. https://en.wikipedia.org/wiki/Shadow_Copy
+1114. https://en.wikipedia.org/wiki/Exit_(command)
+1115. https://en.wikipedia.org/wiki/Kill_(command)
+1116. https://en.wikipedia.org/wiki/Powercfg
+1117. https://en.wikipedia.org/wiki/Runas
+1118. https://en.wikipedia.org/wiki/Windows_service
+1119. https://en.wikipedia.org/wiki/Shutdown_(computing)
+1120. https://en.wikipedia.org/wiki/Start_(command)
+1121. https://en.wikipedia.org/wiki/Taskkill
+1122. https://en.wikipedia.org/wiki/Tasklist
+1123. https://en.wikipedia.org/wiki/File_association
+1124. https://en.wikipedia.org/wiki/Ftype
+1125. https://en.wikipedia.org/wiki/Windows_Registry#Command_line_editing
+1126. https://en.wikipedia.org/wiki/Windows_Registry#Command_line_editing
+1127. https://en.wikipedia.org/wiki/Regsvr32
+1128. https://en.wikipedia.org/wiki/DATE_(command)
+1129. https://en.wikipedia.org/wiki/Mode_(command)
+1130. https://en.wikipedia.org/wiki/PATH_(variable)
+1131. https://en.wikipedia.org/wiki/Environment_variable#DOS.2C_OS.2F2_and_Windows_.28Command_Prompt.29
+1132. https://en.wikipedia.org/wiki/Environment_variable#DOS.2C_OS.2F2_and_Windows_.28Command_Prompt.29
+1133. https://en.wikipedia.org/wiki/TIME_(command)
+1134. https://en.wikipedia.org/wiki/Title_(command)
+1135. https://en.wikipedia.org/wiki/Ver_(command)
+1136. https://en.wikipedia.org/wiki/Whoami
+1137. https://en.wikipedia.org/wiki/Comp_(command)
+1138. https://en.wikipedia.org/wiki/MS-DOS_Editor
+1139. https://en.wikipedia.org/wiki/Edlin
+1140. https://en.wikipedia.org/wiki/Microsoft_File_Compare
+1141. https://en.wikipedia.org/wiki/Find_(command)
+1142. https://en.wikipedia.org/wiki/Findstr_(computing)
+1143. https://en.wikipedia.org/wiki/PRINT_(command)
+1144. https://en.wikipedia.org/wiki/TYPE_(DOS_command)
+1145. https://en.wikipedia.org/wiki/Scripting_language
+1146. https://en.wikipedia.org/wiki/Choice_(command)
+1147. https://en.wikipedia.org/wiki/Clipboard_(computing)
+1148. https://en.wikipedia.org/wiki/Windows_Script_Host
+1149. https://en.wikipedia.org/wiki/DOSKEY
+1150. https://en.wikipedia.org/wiki/Echo_(command)
+1151. https://en.wikipedia.org/wiki/For_loop
+1152. https://en.wikipedia.org/wiki/Goto
+1153. https://en.wikipedia.org/wiki/Conditional_(programming)
+1154. https://en.wikipedia.org/wiki/More_(command)
+1155. https://en.wikipedia.org/wiki/Pause_(DOS_command)
+1156. https://en.wikipedia.org/wiki/Command-line_interface#Command_prompt
+1157. https://en.wikipedia.org/wiki/Comment_(computer_programming)
+1158. https://en.wikipedia.org/wiki/Address_Resolution_Protocol
+1159. https://en.wikipedia.org/wiki/MAC_address
+1160. https://en.wikipedia.org/wiki/Hostname
+1161. https://en.wikipedia.org/wiki/Ipconfig
+1162. https://en.wikipedia.org/wiki/Net_use
+1163. https://en.wikipedia.org/wiki/Netsh
+1164. https://en.wikipedia.org/wiki/Netstat
+1165. https://en.wikipedia.org/wiki/Nslookup
+1166. https://en.wikipedia.org/wiki/PathPing
+1167. https://en.wikipedia.org/wiki/Ping_(networking_utility)
+1168. https://en.wikipedia.org/wiki/Route_(command)
+1169. https://en.wikipedia.org/wiki/Traceroute
+1170. https://en.wikipedia.org/w/index.php?title=Driverquery&action=edit&redlink=1
+1171. https://en.wikipedia.org/wiki/Windows_Installer
+1172. https://en.wikipedia.org/wiki/NTBackup
+1173. https://en.wikipedia.org/wiki/System_File_Checker
+1174. https://en.wikipedia.org/wiki/Systeminfo
+1175. https://en.wikipedia.org/wiki/W32tm
+1176. https://en.wikipedia.org/wiki/WBAdmin
+1177. https://en.wikipedia.org/wiki/Windows_System_Assessment_Tool
+1178. https://en.wikipedia.org/wiki/Windows_Management_Instrumentation_Command-line
+1179. https://en.wikipedia.org/wiki/Bcdedit
+1180. https://en.wikipedia.org/wiki/Bootcfg
+1181. https://en.wikipedia.org/wiki/Fixboot
+1182. https://en.wikipedia.org/wiki/Fixmbr
+1183. https://en.wikipedia.org/wiki/Software_development
+1184. https://en.wikipedia.org/wiki/Debug_(command)
+1185. https://en.wikipedia.org/wiki/Exe2bin
+1186. https://en.wikipedia.org/wiki/QBasic
+1187. https://en.wikipedia.org/wiki/Cls_(command)
+1188. https://en.wikipedia.org/wiki/Help_(command)
+1189. https://en.wikipedia.org/wiki/List_of_DOS_commands
+1190. https://en.wikipedia.org/wiki/Environment_variable
+1191. https://en.wikipedia.org/wiki/Template:Common_Language_Infrastructure
+1192. https://en.wikipedia.org/wiki/Template_talk:Common_Language_Infrastructure
+1193. https://en.wikipedia.org/w/index.php?title=Template:Common_Language_Infrastructure&action=edit
+1194. https://en.wikipedia.org/wiki/Common_Language_Infrastructure
+1195. https://en.wikipedia.org/wiki/Application_domain
+1196. https://en.wikipedia.org/wiki/Code_Access_Security
+1197. https://en.wikipedia.org/wiki/Common_Intermediate_Language
+1198. https://en.wikipedia.org/wiki/List_of_CIL_instructions
+1199. https://en.wikipedia.org/wiki/Common_Type_System
+1200. https://en.wikipedia.org/wiki/Platform_Invocation_Services
+1201. https://en.wikipedia.org/wiki/Virtual_Execution_System
+1202. https://en.wikipedia.org/wiki/Assembly_(CLI)
+1203. https://en.wikipedia.org/wiki/Delegate_(CLI)
+1204. https://en.wikipedia.org/wiki/Global_Assembly_Cache
+1205. https://en.wikipedia.org/wiki/Manifest_(CLI)
+1206. https://en.wikipedia.org/wiki/Metadata_(CLI)
+1207. https://en.wikipedia.org/wiki/Standard_Libraries_(CLI)
+1208. https://en.wikipedia.org/wiki/Standard_Libraries_(CLI)#Kernel_Profile
+1209. https://en.wikipedia.org/wiki/Standard_Libraries_(CLI)#Base_Class_Library
+1210. https://en.wikipedia.org/wiki/Standard_Libraries_(CLI)#Runtime_Infrastructure_Library
+1211. https://en.wikipedia.org/wiki/Standard_Libraries_(CLI)#Compact_Profile
+1212. https://en.wikipedia.org/wiki/Standard_Libraries_(CLI)#Network_Library
+1213. https://en.wikipedia.org/wiki/Standard_Libraries_(CLI)#Reflection_Library
+1214. https://en.wikipedia.org/wiki/Standard_Libraries_(CLI)#XML_Library
+1215. https://en.wikipedia.org/wiki/Standard_Libraries_(CLI)#Extended_Array_Library
+1216. https://en.wikipedia.org/wiki/Standard_Libraries_(CLI)#Extended_Numerics_Library
+1217. https://en.wikipedia.org/wiki/Standard_Libraries_(CLI)#Parallel_Library
+1218. https://en.wikipedia.org/wiki/Standard_Libraries_(CLI)#Vararg_Library
+1219. https://en.wikipedia.org/wiki/.NET_Framework
+1220. https://en.wikipedia.org/wiki/.NET_Compact_Framework
+1221. https://en.wikipedia.org/wiki/.NET_Micro_Framework
+1222. https://en.wikipedia.org/wiki/Shared_Source_Common_Language_Infrastructure
+1223. https://en.wikipedia.org/wiki/.NET_Core
+1224. https://en.wikipedia.org/wiki/Mono_(software)
+1225. https://en.wikipedia.org/wiki/Portable.NET
+1226. https://en.wikipedia.org/wiki/List_of_CLI_languages
+1227. https://en.wikipedia.org/wiki/C_Sharp_(programming_language)
+1228. https://en.wikipedia.org/wiki/Microsoft_Visual_C_Sharp
+1229. https://en.wikipedia.org/wiki/Visual_Basic_.NET
+1230. https://en.wikipedia.org/wiki/C%2B%2B/CLI
+1231. https://en.wikipedia.org/wiki/Managed_Extensions_for_C%2B%2B
+1232. https://en.wikipedia.org/wiki/F_Sharp_(programming_language)
+1233. https://en.wikipedia.org/wiki/J_Sharp
+1234. https://en.wikipedia.org/wiki/JScript_.NET
+1235. https://en.wikipedia.org/wiki/Axum_(programming_language)
+1236. https://en.wikipedia.org/wiki/A_Sharp_(.NET)
+1237. https://en.wikipedia.org/wiki/Boo_(programming_language)
+1238. https://en.wikipedia.org/wiki/Cobra_(programming_language)
+1239. https://en.wikipedia.org/wiki/IronScheme
+1240. https://en.wikipedia.org/wiki/IronLisp
+1241. https://en.wikipedia.org/wiki/IronPython
+1242. https://en.wikipedia.org/wiki/IronRuby
+1243. https://en.wikipedia.org/wiki/Nemerle
+1244. https://en.wikipedia.org/wiki/Oxygene_(programming_language)
+1245. https://en.wikipedia.org/wiki/Phalanger_(compiler)
+1246. https://en.wikipedia.org/wiki/P_Sharp
+1247. https://en.wikipedia.org/wiki/Scala_(programming_language)
+1248. https://en.wikipedia.org/wiki/Comparison_of_C_Sharp_and_Java
+1249. https://en.wikipedia.org/wiki/Comparison_of_C_Sharp_and_Visual_Basic_.NET
+1250. https://en.wikipedia.org/wiki/Comparison_of_the_Java_and_.NET_platforms
+1251. https://en.wikipedia.org/wiki/Comparison_of_Visual_Basic_and_Visual_Basic_.NET
+1252. https://en.wikipedia.org/wiki/.NET_Foundation
+1253. https://en.wikipedia.org/wiki/DotGNU
+1254. https://en.wikipedia.org/wiki/Microsoft
+1255. https://en.wikipedia.org/wiki/Xamarin
+1256. https://en.wikipedia.org/wiki/Template:Microsoft_APIs
+1257. https://en.wikipedia.org/wiki/Template_talk:Microsoft_APIs
+1258. https://en.wikipedia.org/w/index.php?title=Template:Microsoft_APIs&action=edit
+1259. https://en.wikipedia.org/wiki/List_of_Microsoft_Windows_application_programming_interfaces_and_frameworks
+1260. https://en.wikipedia.org/wiki/Desktop_Window_Manager
+1261. https://en.wikipedia.org/wiki/Direct2D
+1262. https://en.wikipedia.org/wiki/Microsoft_Direct3D
+1263. https://en.wikipedia.org/wiki/D3DX
+1264. https://en.wikipedia.org/wiki/Graphics_Device_Interface
+1265. https://en.wikipedia.org/wiki/Windows_Presentation_Foundation
+1266. https://en.wikipedia.org/wiki/Microsoft_Silverlight
+1267. https://en.wikipedia.org/wiki/Windows_Runtime_XAML_Framework
+1268. https://en.wikipedia.org/wiki/Windows_Color_System
+1269. https://en.wikipedia.org/wiki/Windows_Image_Acquisition
+1270. https://en.wikipedia.org/wiki/Windows_Imaging_Component
+1271. https://en.wikipedia.org/wiki/DirectX_Graphics_Infrastructure
+1272. https://en.wikipedia.org/wiki/Windows_Advanced_Rasterization_Platform
+1273. https://en.wikipedia.org/wiki/WinG
+1274. https://en.wikipedia.org/wiki/DirectMusic
+1275. https://en.wikipedia.org/wiki/DirectSound
+1276. https://en.wikipedia.org/wiki/DirectX_plugin
+1277. https://en.wikipedia.org/wiki/Cross-platform_Audio_Creation_Tool
+1278. https://en.wikipedia.org/wiki/Microsoft_Speech_API
+1279. https://en.wikipedia.org/wiki/XAudio2
+1280. https://en.wikipedia.org/wiki/DirectX
+1281. https://en.wikipedia.org/wiki/DirectX_Media_Objects
+1282. https://en.wikipedia.org/wiki/DirectX_Video_Acceleration
+1283. https://en.wikipedia.org/wiki/Xinput
+1284. https://en.wikipedia.org/wiki/DirectInput
+1285. https://en.wikipedia.org/wiki/DirectShow
+1286. https://en.wikipedia.org/wiki/Image_Mastering_API
+1287. https://en.wikipedia.org/wiki/Managed_DirectX
+1288. https://en.wikipedia.org/wiki/Media_Foundation
+1289. https://en.wikipedia.org/wiki/Microsoft_XNA
+1290. https://en.wikipedia.org/wiki/Windows_Media
+1291. https://en.wikipedia.org/wiki/Video_for_Windows
+1292. https://en.wikipedia.org/wiki/Trident_(layout_engine)
+1293. https://en.wikipedia.org/wiki/Windows_RSS_Platform
+1294. https://en.wikipedia.org/wiki/JScript
+1295. https://en.wikipedia.org/wiki/VBScript
+1296. https://en.wikipedia.org/wiki/Browser_Helper_Object
+1297. https://en.wikipedia.org/wiki/XMLHttpRequest
+1298. https://en.wikipedia.org/wiki/Microsoft_Gadgets
+1299. https://en.wikipedia.org/wiki/TypeScript
+1300. https://en.wikipedia.org/wiki/Microsoft_Data_Access_Components
+1301. https://en.wikipedia.org/wiki/ActiveX_Data_Objects
+1302. https://en.wikipedia.org/wiki/ADO.NET
+1303. https://en.wikipedia.org/wiki/ODBC
+1304. https://en.wikipedia.org/wiki/OLE_DB
+1305. https://en.wikipedia.org/wiki/Extensible_Storage_Engine
+1306. https://en.wikipedia.org/wiki/Entity_Framework
+1307. https://en.wikipedia.org/wiki/Microsoft_Sync_Framework
+1308. https://en.wikipedia.org/wiki/Microsoft_Jet_Database_Engine
+1309. https://en.wikipedia.org/wiki/MSXML
+1310. https://en.wikipedia.org/wiki/Open_Packaging_Conventions
+1311. https://en.wikipedia.org/wiki/Winsock
+1312. https://en.wikipedia.org/wiki/Layered_Service_Provider
+1313. https://en.wikipedia.org/wiki/Windows_Vista_networking_technologies#Winsock_Kernel
+1314. https://en.wikipedia.org/wiki/Windows_Filtering_Platform
+1315. https://en.wikipedia.org/wiki/Network_Driver_Interface_Specification
+1316. https://en.wikipedia.org/wiki/Windows_Rally
+1317. https://en.wikipedia.org/wiki/Background_Intelligent_Transfer_Service
+1318. https://en.wikipedia.org/wiki/Windows_Vista_networking_technologies#Peer-to-peer_communication
+1319. https://en.wikipedia.org/wiki/Microsoft_Message_Queuing
+1320. https://en.wikipedia.org/wiki/Microsoft_Messaging_Passing_Interface
+1321. https://en.wikipedia.org/wiki/DirectPlay
+1322. https://en.wikipedia.org/wiki/Messaging_Application_Programming_Interface
+1323. https://en.wikipedia.org/wiki/Telephony_Application_Programming_Interface
+1324. https://en.wikipedia.org/wiki/Windows_Communication_Foundation
+1325. https://en.wikipedia.org/wiki/Win32_console
+1326. https://en.wikipedia.org/wiki/Windows_Script_Host
+1327. https://en.wikipedia.org/wiki/Windows_Management_Instrumentation
+1328. https://en.wikipedia.org/wiki/Windows_Task_Scheduler
+1329. https://en.wikipedia.org/wiki/Windows_Vista_I/O_technologies#Offline_Files
+1330. https://en.wikipedia.org/wiki/Shadow_Copy
+1331. https://en.wikipedia.org/wiki/Windows_Installer
+1332. https://en.wikipedia.org/wiki/Windows_Error_Reporting
+1333. https://en.wikipedia.org/wiki/Event_Viewer#Windows_Event_Log
+1334. https://en.wikipedia.org/wiki/Common_Log_File_System
+1335. https://en.wikipedia.org/wiki/Component-based_software_engineering
+1336. https://en.wikipedia.org/wiki/Component_Object_Model
+1337. https://en.wikipedia.org/wiki/Component_Object_Model#COM.2B
+1338. https://en.wikipedia.org/wiki/ActiveX
+1339. https://en.wikipedia.org/wiki/Distributed_Component_Object_Model
+1340. https://en.wikipedia.org/wiki/.NET_Framework
+1341. https://en.wikipedia.org/wiki/Library_(computing)
+1342. https://en.wikipedia.org/wiki/Framework_Class_Library
+1343. https://en.wikipedia.org/wiki/Microsoft_Foundation_Class_Library
+1344. https://en.wikipedia.org/wiki/Active_Template_Library
+1345. https://en.wikipedia.org/wiki/Windows_Template_Library
+1346. https://en.wikipedia.org/wiki/Device_driver
+1347. https://en.wikipedia.org/wiki/Windows_Driver_Model
+1348. https://en.wikipedia.org/wiki/Windows_Driver_Frameworks
+1349. https://en.wikipedia.org/wiki/Kernel-Mode_Driver_Framework
+1350. https://en.wikipedia.org/wiki/User-Mode_Driver_Framework
+1351. https://en.wikipedia.org/wiki/Windows_Display_Driver_Model
+1352. https://en.wikipedia.org/wiki/Network_Driver_Interface_Specification
+1353. https://en.wikipedia.org/wiki/Universal_Audio_Architecture
+1354. https://en.wikipedia.org/wiki/Broadcast_Driver_Architecture
+1355. https://en.wikipedia.org/wiki/VxD
+1356. https://en.wikipedia.org/wiki/Microsoft_CryptoAPI
+1357. https://en.wikipedia.org/wiki/CAPICOM
+1358. https://en.wikipedia.org/wiki/Windows_CardSpace
+1359. https://en.wikipedia.org/wiki/Data_Protection_API
+1360. https://en.wikipedia.org/wiki/Security_Support_Provider_Interface
+1361. https://en.wikipedia.org/wiki/.NET_Framework
+1362. https://en.wikipedia.org/wiki/ASP.NET
+1363. https://en.wikipedia.org/wiki/ADO.NET
+1364. https://en.wikipedia.org/wiki/.NET_Remoting
+1365. https://en.wikipedia.org/wiki/Microsoft_Silverlight
+1366. https://en.wikipedia.org/wiki/Task_Parallel_Library
+1367. https://en.wikipedia.org/wiki/Windows_Communication_Foundation
+1368. https://en.wikipedia.org/wiki/Windows_CardSpace
+1369. https://en.wikipedia.org/wiki/Windows_Presentation_Foundation
+1370. https://en.wikipedia.org/wiki/Windows_Workflow_Foundation
+1371. https://en.wikipedia.org/wiki/Software_Factory_(Microsoft_.NET)
+1372. https://en.wikipedia.org/wiki/EFx_Factory
+1373. https://en.wikipedia.org/wiki/Microsoft_Enterprise_Library
+1374. https://en.wikipedia.org/wiki/Composite_UI_Application_Block
+1375. https://en.wikipedia.org/wiki/Microsoft_Customer_Care_Framework
+1376. https://en.wikipedia.org/wiki/Microsoft_Connected_Services_Framework
+1377. https://en.wikipedia.org/wiki/Inter-process_communication
+1378. https://en.wikipedia.org/wiki/Microsoft_RPC
+1379. https://en.wikipedia.org/wiki/Dynamic_Data_Exchange
+1380. https://en.wikipedia.org/wiki/.NET_Remoting
+1381. https://en.wikipedia.org/wiki/Windows_Communication_Foundation
+1382. https://en.wikipedia.org/wiki/Microsoft_Active_Accessibility
+1383. https://en.wikipedia.org/wiki/Microsoft_UI_Automation
+1384. https://en.wikipedia.org/wiki/DirectWrite
+1385. https://en.wikipedia.org/wiki/Text_Services_Framework
+1386. https://en.wikipedia.org/wiki/Text_Object_Model
+1387. https://en.wikipedia.org/wiki/Input_method
+1388. https://en.wikipedia.org/wiki/Language_Interface_Pack
+1389. https://en.wikipedia.org/wiki/Multilingual_User_Interface
+1390. https://en.wikipedia.org/wiki/Uniscribe
+1391. https://en.wikipedia.org/w/index.php?title=PowerShell&oldid=746993867
+1392. https://en.wikipedia.org/wiki/Help:Category
+1393. https://en.wikipedia.org/wiki/Category:Windows_commands
+1394. https://en.wikipedia.org/wiki/Category:.NET_programming_languages
+1395. https://en.wikipedia.org/wiki/Category:Dynamically_typed_programming_languages
+1396. https://en.wikipedia.org/wiki/Category:Interpreters_(computing)
+1397. https://en.wikipedia.org/wiki/Category:Windows_administration
+1398. https://en.wikipedia.org/wiki/Category:Object-oriented_programming_languages
+1399. https://en.wikipedia.org/wiki/Category:Procedural_programming_languages
+1400. https://en.wikipedia.org/wiki/Category:Scripting_languages
+1401. https://en.wikipedia.org/wiki/Category:Text-oriented_programming_languages
+1402. https://en.wikipedia.org/wiki/Category:Command_shells
+1403. https://en.wikipedia.org/wiki/Category:Programming_languages_created_in_2006
+1404. https://en.wikipedia.org/wiki/Category:Microsoft_free_software
+1405. https://en.wikipedia.org/wiki/Category:All_articles_with_unsourced_statements
+1406. https://en.wikipedia.org/wiki/Category:Articles_with_unsourced_statements_from_May_2013
+1407. https://en.wikipedia.org/wiki/Category:All_articles_lacking_reliable_references
+1408. https://en.wikipedia.org/wiki/Category:Articles_lacking_reliable_references_from_May_2015
+1409. https://en.wikipedia.org/wiki/Category:Articles_with_specifically_marked_weasel-worded_phrases_from_December_2015
+1410. https://en.wikipedia.org/wiki/Category:Vague_or_ambiguous_time_from_December_2015
+1411. https://en.wikipedia.org/wiki/Category:Articles_with_unsourced_statements_from_December_2015
+1412. https://en.wikipedia.org/wiki/Category:Wikipedia_articles_needing_clarification_from_January_2014
+1413. https://en.wikipedia.org/wiki/Special:MyTalk
+1414. https://en.wikipedia.org/wiki/Special:MyContributions
+1415. https://en.wikipedia.org/w/index.php?title=Special:CreateAccount&returnto=PowerShell
+1416. https://en.wikipedia.org/w/index.php?title=Special:UserLogin&returnto=PowerShell
+1417. https://en.wikipedia.org/wiki/PowerShell
+1418. https://en.wikipedia.org/wiki/Talk:PowerShell
+1419. https://en.wikipedia.org/wiki/PowerShell
+1420. https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit
+1421. https://en.wikipedia.org/w/index.php?title=PowerShell&action=history
+1422. https://en.wikipedia.org/wiki/Main_Page
+1423. https://en.wikipedia.org/wiki/Portal:Contents
+1424. https://en.wikipedia.org/wiki/Portal:Featured_content
+1425. https://en.wikipedia.org/wiki/Portal:Current_events
+1426. https://en.wikipedia.org/wiki/Special:Random
+1427. https://donate.wikimedia.org/wiki/Special:FundraiserRedirector?utm_source=donate&utm_medium=sidebar&utm_campaign=C13_en.wikipedia.org&uselang=en
+1428. https://shop.wikimedia.org/
+1429. https://en.wikipedia.org/wiki/Help:Contents
+1430. https://en.wikipedia.org/wiki/Wikipedia:About
+1431. https://en.wikipedia.org/wiki/Wikipedia:Community_portal
+1432. https://en.wikipedia.org/wiki/Special:RecentChanges
+1433. https://en.wikipedia.org/wiki/Wikipedia:Contact_us
+1434. https://en.wikipedia.org/wiki/Special:WhatLinksHere/PowerShell
+1435. https://en.wikipedia.org/wiki/Special:RecentChangesLinked/PowerShell
+1436. https://en.wikipedia.org/wiki/Wikipedia:File_Upload_Wizard
+1437. https://en.wikipedia.org/wiki/Special:SpecialPages
+1438. https://en.wikipedia.org/w/index.php?title=PowerShell&oldid=746993867
+1439. https://en.wikipedia.org/w/index.php?title=PowerShell&action=info
+1440. https://www.wikidata.org/wiki/Q840410
+1441. https://en.wikipedia.org/w/index.php?title=Special:CiteThisPage&page=PowerShell&id=746993867
+1442. https://en.wikipedia.org/w/index.php?title=Special:Book&bookcmd=book_creator&referer=PowerShell
+1443. https://en.wikipedia.org/w/index.php?title=Special:Book&bookcmd=render_article&arttitle=PowerShell&returnto=PowerShell&oldid=746993867&writer=rdf2latex
+1444. https://en.wikipedia.org/w/index.php?title=PowerShell&printable=yes
+1445. https://commons.wikimedia.org/wiki/Category:Powershell
+1446. https://en.wikibooks.org/wiki/Introduction_to_.NET_Framework_3.0/Windows_PowerShell
+1447. https://en.wikiversity.org/wiki/Windows_PowerShell
+1448. https://ar.wikipedia.org/wiki/%D9%88%D9%8A%D9%86%D8%AF%D9%88%D8%B2_%D8%A8%D8%A7%D9%88%D8%B1%D8%B4%D9%8A%D9%84
+1449. https://ca.wikipedia.org/wiki/Windows_PowerShell
+1450. https://cs.wikipedia.org/wiki/Windows_PowerShell
+1451. https://da.wikipedia.org/wiki/Windows_PowerShell
+1452. https://de.wikipedia.org/wiki/PowerShell
+1453. https://et.wikipedia.org/wiki/Windows_PowerShell
+1454. https://es.wikipedia.org/wiki/Windows_PowerShell
+1455. https://fa.wikipedia.org/wiki/%D9%88%DB%8C%D9%86%D8%AF%D9%88%D8%B2_%D9%BE%D8%A7%D9%88%D8%B1%D8%B4%D9%84
+1456. https://fr.wikipedia.org/wiki/Windows_PowerShell
+1457. https://ko.wikipedia.org/wiki/%EC%9C%88%EB%8F%84%EC%9A%B0_%ED%8C%8C%EC%9B%8C%EC%85%B8
+1458. https://id.wikipedia.org/wiki/Windows_PowerShell
+1459. https://it.wikipedia.org/wiki/Windows_PowerShell
+1460. https://he.wikipedia.org/wiki/Windows_PowerShell
+1461. https://jv.wikipedia.org/wiki/Windows_PowerShell
+1462. https://nl.wikipedia.org/wiki/Windows_PowerShell
+1463. https://ja.wikipedia.org/wiki/Windows_PowerShell
+1464. https://no.wikipedia.org/wiki/Windows_PowerShell
+1465. https://pl.wikipedia.org/wiki/Windows_PowerShell
+1466. https://pt.wikipedia.org/wiki/PowerShell
+1467. https://ru.wikipedia.org/wiki/Windows_PowerShell
+1468. https://fi.wikipedia.org/wiki/Windows_PowerShell
+1469. https://tr.wikipedia.org/wiki/Windows_PowerShell
+1470. https://uk.wikipedia.org/wiki/PowerShell
+1471. https://yi.wikipedia.org/wiki/Windows_PowerShell
+1472. https://zh.wikipedia.org/wiki/Windows_PowerShell
+1473. https://www.wikidata.org/wiki/Q840410#sitelinks-wikipedia
+1474. https://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License
+1475. https://wikimediafoundation.org/wiki/Terms_of_Use
+1476. https://wikimediafoundation.org/wiki/Privacy_policy
+1477. https://www.wikimediafoundation.org/
+1478. https://wikimediafoundation.org/wiki/Privacy_policy
+1479. https://en.wikipedia.org/wiki/Wikipedia:About
+1480. https://en.wikipedia.org/wiki/Wikipedia:General_disclaimer
+1481. https://en.wikipedia.org/wiki/Wikipedia:Contact_us
+1482. https://www.mediawiki.org/wiki/Special:MyLanguage/How_to_contribute
+1483. https://wikimediafoundation.org/wiki/Cookie_statement
+1484. https://en.m.wikipedia.org/w/index.php?title=PowerShell&mobileaction=toggle_view_mobile
+1485. https://wikimediafoundation.org/
+1486. https://www.mediawiki.org/
+
+   Hidden links:
+1488. https://en.wikipedia.org/wiki/File:PowerShell_for_Linux_6.0_Alpha_9_on_Ubuntu.png
+1489. https://en.wikipedia.org/wiki/File:PowerShell_for_Linux_6.0_Alpha_9_on_Ubuntu.png
+1490. https://en.wikipedia.org/wiki/File:Windows_PowerShell_ISE_screenshot.png
+1491. https://en.wikipedia.org/wiki/File:Windows_PowerShell_ISE_screenshot.png
+1492. https://en.wikipedia.org/wiki/File:Wikiversity-logo.svg
+1493. https://en.wikipedia.org/wiki/PowerShell
+1494. https://en.wikipedia.org/wiki/PowerShell
+1495. https://en.wikipedia.org/wiki/Main_Page
+1496. https://en.wikipedia.org/wiki/PowerShell
+1497. https://creativecommons.org/licenses/by-sa/3.0/

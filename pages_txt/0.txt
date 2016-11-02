@@ -1,0 +1,810 @@
+   #[1]alternate [2]Edit this page [3]Wikipedia (en) [4]copyright
+
+Shell script
+
+   From Wikipedia, the free encyclopedia
+   Jump to: [5]navigation, [6]search
+   This article is about scripting in UNIX-like systems. For batch
+   programming in DOS, OS/2 and Windows, see [7]Batch file. For batch
+   programming in Windows PowerShell shell, see [8]Windows PowerShell
+   § Scripting. For programming in the shells (Cmd.exe) in operating
+   systems of the Windows NT/2000 series, see [9]cmd.exe. For shell
+   programming, by means of files called Command Scripts or Procedures on
+   Vax/VMS machines, see [10]DIGITAL Command Language.
+   This article has multiple issues. Please help [11]improve it or discuss
+   these issues on the [12]talk page. ([13]Learn how and when to remove
+   these template messages)
+   This article needs additional citations for [14]verification. Please
+   help [15]improve this article by [16]adding citations to reliable
+   sources. Unsourced material may be challenged and removed. (February
+   2014) ([17]Learn how and when to remove this template message)
+   This article's [18]introduction may be too long for the length of the
+   article. Please help by moving some material from it into the body of
+   the article. Please read the [19]layout guide and [20]lead section
+   guidelines to ensure the section will still be inclusive of all
+   essential details. Please discuss this issue on the article's [21]talk
+   page. (September 2015)
+   ([22]Learn how and when to remove this template message)
+   Editing a [23]FreeBSD shell script for configuring [24]ipfirewall
+
+   A shell script is a [25]computer program designed to be run by the
+   [26]Unix shell, a [27]command-line interpreter.^[28][1] The various
+   dialects of shell scripts are considered to be [29]scripting languages.
+
+   Typical operations performed by shell scripts include file
+   manipulation, program execution, and printing text. A script which sets
+   up the environment, runs the program, and does any necessary cleanup,
+   logging, &c is called a wrapper.
+
+   The term is also used more generally to mean the automated mode of
+   running an operating system shell; in specific operating systems they
+   are called other things such as batch files (MSDos-Win95 stream, OS/2),
+   command procedures (VMS), and shell scripts (Windows NT stream and
+   third-party derivatives like [30]4NT--article is at [31]cmd.exe), and
+   mainframe operating systems are associated with a number of terms.
+
+   The typical Unix/Linux/Posix-compliant installation includes the
+   [32]Korn Shell (ksh) in several possible versions such as ksh88, Korn
+   Shell '93 and others. The oldest shell still in common use is the
+   [33]Bourne shell (sh); Unix systems invariably include also the [34]C
+   Shell (csh), [35]Bourne Again Shell (bash), a remote shell ([36]rsh), a
+   secure shell for SSL telnet connections ([37]ssh), and a shell which is
+   a main component of the [38]Tcl/Tk installation usually called
+   [39]tclsh; [40]wish is a GUI-based Tcl/Tk shell. The C and Tcl shells
+   have syntax quite similar to that of said programming languages, and
+   the Korn shells and Bash are developments of the Bourne shell, which is
+   based on the [41]ALGOL language with elements of a number of others
+   added as well.^[42][2] On the other hand, the various shells plus tools
+   like [43]awk, [44]sed, [45]grep, and [46]BASIC, [47]Lisp, [48]C and so
+   forth contributed to the [49]Perl programming language.^[50][3]
+
+   Other shells available on a machine or available for download and/or
+   purchase include [51]ash, [52]msh, [53]ysh, [54]zsh (a particularly
+   common enhanced Korn Shell), the Tenex C Shell ([55]tcsh), a Perl-like
+   shell ([56]psh) and others. Related programmes such as shells based on
+   [57]Python, [58]Ruby, [59]C, [60]Java, [61]Perl, [62]Pascal, [63]Rexx
+   &c in various forms are also widely available. Another somewhat common
+   shell is [64]osh, whose manual page states it "is an enhanced,
+   backward-compatible port of the standard command interpreter from Sixth
+   Edition UNIX."
+
+   Windows-Unix interoperability software such as the [65]MKS Toolkit,
+   [66]Cygwin, [67]UWIN, [68]Interix and others make the above shells and
+   Unix programming available on Windows systems all the way down to such
+   things as signals and other [69]inter-process communication, [70]system
+   calls and [71]APIs; the [72]Hamilton C Shell is a Windows shell very
+   similar to the Unix C Shell, and Microsoft distributes [73]Windows
+   Services for UNIX for use with its NT-based operating systems in
+   particular, which have a Posix [74]environmental subsystem.
+
+Contents
+
+     * [75]1 Capabilities
+          + [76]1.1 Shortcuts
+          + [77]1.2 Batch jobs
+          + [78]1.3 Generalization
+          + [79]1.4 Verisimilitude
+          + [80]1.5 Programming
+     * [81]2 Other scripting languages
+     * [82]3 Life cycle
+     * [83]4 Advantages and disadvantages
+     * [84]5 Shell Scripting On Other Operating Systems
+     * [85]6 See also
+     * [86]7 References
+     * [87]8 External links
+
+Capabilities[[88]edit]
+
+Shortcuts[[89]edit]
+
+   A shell script can provide a convenient variation of a system command
+   where special environment settings, command options, or post-processing
+   apply automatically, but in a way that allows the new script to still
+   act as a fully normal Unix command.
+
+   One example would be to create a version of [90]ls, the command to list
+   files, giving it a shorter command name of l, which would be normally
+   saved in a user's bin directory as /home/username/bin/l, and a default
+   set of command options pre-supplied.
+#!/bin/sh
+LC_COLLATE=C ls -FCas "$@"
+
+   Here, [91]the first line (shebang) indicates which interpreter should
+   execute the rest of the script, and the second line makes a listing
+   with options for file format indicators, columns, all files (none
+   omitted), and a size in blocks. The LC_COLLATE=C sets the default
+   collation order to not fold upper and lower case together, not intermix
+   [92]dotfiles with normal filenames as a side effect of ignoring
+   punctuation in the names (dotfiles are usually only shown if an option
+   like -a is used), and the "$@" causes any parameters given to l to pass
+   through as parameters to ls, so that all of the normal options and
+   other [93]syntax known to ls can still be used.
+
+   The user could then simply use l for the most commonly used short
+   listing.
+
+   Another example of a shell script that could be used as a shortcut
+   would be to print a list of all the files and directories within a
+   given directory.
+#!/bin/sh
+
+clear
+ls -al
+
+   In this case, the shell script would start with its normal starting
+   line of #!/bin/sh. Following this, the script executes the command
+   clear which clears the terminal of all text before going to the next
+   line. The following line provides the main function of the script. The
+   ls -al command list the files and directories that are in the directory
+   from which the script is being run. The [94]ls command attributes could
+   be changed to reflect the needs of the user.
+
+   Note: If an implementation does not have the clear command, try using
+   the clr command instead.
+
+Batch jobs[[95]edit]
+
+   Shell scripts allow several commands that would be entered manually at
+   a command-line interface to be executed automatically, and without
+   having to wait for a user to trigger each stage of the sequence. For
+   example, in a directory with three C source code files, rather than
+   manually running the four commands required to build the final program
+   from them, one could instead create a [96]C shell script, here named
+   build and kept in the directory with them, which would compile them
+   automatically:
+#!/bin/csh
+echo compiling...
+cc -c foo.c
+cc -c bar.c
+cc -c qux.c
+cc -o myprog foo.o bar.o qux.o
+echo done.
+
+   The script would allow a user to save the file being edited, pause the
+   editor, and then just run ./build to create the updated program, test
+   it, and then return to the editor. Since the 1980s or so, however,
+   scripts of this type have been replaced with utilities like [97]make
+   which are specialized for building programs.
+
+Generalization[[98]edit]
+
+   Simple batch jobs are not unusual for isolated tasks, but using shell
+   loops, tests, and variables provides much more flexibility to users. A
+   [99]Bash (Unix shell) script to convert JPEG images to PNG images,
+   where the image names are provided on the command-line--possibly via
+   wildcards--instead of each being listed within the script, can be
+   created with this file, typically saved in a file like
+   /home/username/bin/jpg2png
+#!/bin/bash
+for jpg; do                                  # use $jpg in place of each filenam
+e given, in turn
+    png="${jpg%.jpg}.png"                    # construct the PNG version of the
+filename by replacing .jpg with .png
+    echo converting "$jpg" ...               # output status info to the user ru
+nning the script
+    if convert "$jpg" jpg.to.png ; then      # use the convert program (common i
+n Linux) to create the PNG in a temp file
+        mv jpg.to.png "$png"                 # if it worked, rename the temporar
+y PNG image to the correct name
+    else                                     # ...otherwise complain and exit fr
+om the script
+        echo 'jpg2png: error: failed output saved in "jpg.to.png".' >&2
+        exit 1
+    fi                                       # the end of the "if" test construc
+t
+done                                         # the end of the "for" loop
+echo all conversions successful              # tell the user the good news
+exit 0
+
+   The jpg2png command can then be run on an entire directory full of JPEG
+   images with just /home/username/bin/jpg2png *.jpg
+
+Verisimilitude[[100]edit]
+
+   A key feature of shell scripts is that the invocation of their
+   interpreters is handled as a core operating system feature. So rather
+   than a user's shell only being able to execute scripts in that shell's
+   language, or a script only having its [101]interpreter directive
+   handled correctly if it was run from a shell (both of which were
+   limitations in the early Bourne shell's handling of scripts), shell
+   scripts are set up and executed by the OS itself. A modern shell script
+   is not just on the same footing as system commands, but rather many
+   system commands are actually shell scripts (or more generally, scripts,
+   since some of them are not interpreted by a shell, but instead by
+   [102]Perl, [103]Python, or some other language). This extends to
+   returning exit codes like other system utilities to indicate success or
+   failure, and allows them to be called as components of larger programs
+   regardless of how those larger tools are implemented.
+
+   Like standard system commands, shell scripts classically omit any kind
+   of filename extension unless intended to be read into a running shell
+   through a special mechanism for this purpose (such as sh's ". ", or
+   csh's source).
+
+Programming[[104]edit]
+
+   Many modern shells also supply various features usually found only in
+   more sophisticated [105]general-purpose programming languages, such as
+   control-flow constructs, variables, [106]comments, arrays,
+   [107]subroutine and so on. With these sorts of features available, it
+   is possible to write reasonably sophisticated applications as shell
+   scripts. However, they are still limited by the fact that most shell
+   languages have little or no support for data typing systems, classes,
+   threading, complex math, and other common full language features, and
+   are also generally much slower than compiled code or interpreted
+   languages written with speed as a performance goal.
+
+   The standard Unix tools [108]sed and [109]awk provide extra
+   capabilities for shell programming; [110]Perl can also be embedded in
+   shell scripts as can other scripting languages like [111]Tcl. Perl and
+   Tcl come with graphics toolkits as well.
+
+Other scripting languages[[112]edit]
+
+   Main article: [113]scripting language
+
+   Many powerful scripting languages have been introduced for tasks that
+   are too large or complex to be comfortably handled with ordinary shell
+   scripts, but for which the advantages of a script are desirable and the
+   development overhead of a full-blown, compiled programming language
+   would be disadvantageous. The specifics of what separates scripting
+   languages from [114]high-level programming languages is a frequent
+   source of debate. But generally speaking a scripting language is one
+   which requires an interpreter.
+
+Life cycle[[115]edit]
+
+   Shell scripts often serve as an initial stage in software development,
+   and are often subject to conversion later to a different underlying
+   implementation, most commonly being converted to [116]Perl,
+   [117]Python, or [118]C. The [119]interpreter directive allows the
+   implementation detail to be fully hidden inside the script, rather than
+   being exposed as a filename extension, and provides for seamless
+   reimplementation in different languages with no impact on end users.
+
+   While files with the ".sh" [120]file extension are usually a shell
+   script of some kind, most shell scripts do not have any filename
+   extension.^[121][4]^[122][5]
+
+Advantages and disadvantages[[123]edit]
+
+   Perhaps the biggest advantage of writing a shell script is that the
+   commands and syntax are exactly the same as those directly entered at
+   the command-line. The programmer does not have to switch to a totally
+   different syntax, as they would if the script were written in a
+   different language, or if a compiled language were used.
+
+   Often, writing a shell script is much quicker than writing the
+   equivalent code in other programming languages. The many advantages
+   include easy program or file selection, quick start, and interactive
+   debugging. A shell script can be used to provide a sequencing and
+   decision-making linkage around existing programs, and for moderately
+   sized scripts the absence of a compilation step is an advantage.
+   Interpretive running makes it easy to write debugging code into a
+   script and re-run it to detect and fix bugs. Non-expert users can use
+   scripting to tailor the behavior of programs, and shell scripting
+   provides some limited scope for multiprocessing.
+
+   On the other hand, shell scripting is prone to costly errors.
+   Inadvertent typing errors such as [124]rm -rf * / (instead of the
+   intended rm -rf */) are folklore in the Unix community; a single extra
+   space converts the command from one that deletes everything in the
+   sub-directories to one which deletes everything--and also tries to
+   delete everything in the [125]root directory. Similar problems can
+   transform [126]cp and [127]mv into dangerous weapons, and misuse of the
+   > redirect can delete the contents of a file. This is made more
+   problematic by the fact that many UNIX commands differ in name by only
+   one letter: cp, [128]cd, [129]dd, [130]df, etc.
+
+   Another significant disadvantage is the slow execution speed and the
+   need to launch a new process for almost every shell command executed.
+   When a script's job can be accomplished by setting up a [131]pipeline
+   in which efficient [132]filter commands perform most of the work, the
+   slowdown is mitigated, but a complex script is typically several orders
+   of magnitude slower than a conventional compiled program that performs
+   an equivalent task.
+
+   There are also compatibility problems between different platforms.
+   [133]Larry Wall, creator of [134]Perl, famously wrote that "It is
+   easier to port a shell than a shell script."
+
+   Similarly, more complex scripts can run into the limitations of the
+   shell scripting language itself; the limits make it difficult to write
+   quality code, and extensions by various shells to ameliorate problems
+   with the original shell language can make problems worse.^[135][6]
+
+   Many disadvantages of using some script languages are caused by design
+   flaws within the [136]language syntax or implementation, and are not
+   necessarily imposed by the use of a text-based command-line; there are
+   a number of shells which use other shell programming languages or even
+   full-fledged languages like [137]Scsh (which uses [138]Scheme).
+
+Shell Scripting On Other Operating Systems[[139]edit]
+
+   Interoperability software such as [140]Cygwin, the [141]MKS Toolkit,
+   [142]Interix (which is available in the Microsoft Windows Services for
+   UNIX), [143]Hamilton C shell, [144]UWIN (AT&T Unix for Windows) and
+   others allow Unix shell programmes to be run on machines running
+   Windows NT and its successors, with some loss of functionality on the
+   MS-DOS-Windows 95 branch, as well as earlier MKS Toolkit versions for
+   OS/2. At least three DCL implementations for Windows type operating
+   systems--in addition to [145]XLNT, a multiple-use scripting language
+   package which is used with the command shell, [146]Windows Script Host
+   and [147]CGI programming--are available for these systems as well. Mac
+   OS X and subsequent are Unix-like as well.^[148][7]
+
+   In addition to the aforementioned tools, some Posix and OS/2
+   functionality can be used with the corresponding environmental
+   subsystems of the Windows NT operating system series up to Windows 2000
+   as well. A third, 16-bit subsystem often called the MS-DOS subsystem
+   uses the Command.com provided with these operating systems to run the
+   aforementioned MS-DOS batch files.^[149][8]
+
+   The console alternatives [150]4NT, [151]4DOS, [152]4OS2, and the GUI
+   [153]Take Command which add functionality to the Windows NT-style
+   Cmd.exe, MS-DOS/Windows 95 batch files (run by Command.com), OS/2's
+   Cmd.exe, and 4NT respectively are similar to the shells that they
+   enhance and are more integrated with the Windows Script Host, which
+   comes with three pre-installed engines, VBScript, [154]JScript, and
+   [155]VBA and to which numerous third-party engines can be added, with
+   Rexx, Perl, Python, Ruby, and Tcl having pre-defined functions in 4NT
+   and related programmes. [156]PC DOS is quite similar to MS-DOS, whilst
+   [157]DR DOS is more different. Earlier versions of Windows NT are able
+   to run contemporary versions of 4OS2 by the OS/2 subsystem.
+
+   Scripting languages are, by definition, able to be extended; for
+   example, a MS-DOS/Windows 95/98 and Windows NT type systems allows for
+   shell/batch programmes to call tools like [158]KixTart, [159]QBasic,
+   various [160]Basic, [161]Rexx, [162]Perl, and [163]Python
+   implementations, the [164]Windows Script Host and its installed
+   engines. On Unix and other Posix-compliant systems, [165]awk and
+   [166]sed are used to extend the string and numeric processing ability
+   of shell scripts. [167]Tcl, Perl, Rexx, and Python have graphics
+   toolkits and can be used to code functions and procedures for shell
+   scripts which pose a speed bottleneck (C, Fortran, assembly language &c
+   are much faster still) and to add functionality not available in the
+   shell language such as sockets and other connectivity functions,
+   heavy-duty text processing, working with numbers if the calling script
+   does not have those abilities, self-writing and self-modifying code,
+   techniques like [168]recursion, direct memory access, various types of
+   [169]sorting and more, which are difficult or impossible in the main
+   script, and so on. [170]Visual Basic for Applications and [171]VBScript
+   can be used to control and communicate with such things as
+   spreadsheets, databases, scriptable programmes of all types,
+   telecommunications software, development tools, graphics tools and
+   other software which can be accessed through the [172]Component Object
+   Model.
+
+See also[[173]edit]
+
+     * [174]Glue code
+     * [175]Interpreter directive
+     * [176]Shebang symbol (#!)
+     * [177]Unix shells
+     * [178]Windows PowerShell
+     * [179]Windows Script Host
+
+References[[180]edit]
+
+    1. [181]^ [182]Kernighan, Brian W.; [183]Pike, Rob (1984), "3. Using
+       the Shell", The UNIX Programming Environment, Prentice Hall, Inc.,
+       p. 94, [184]ISBN [185]0-13-937699-2, "The shell is actually a
+       programming language: it has variables, loops, decision-making, and
+       so on."
+    2. [186]^ Unix Shells By Example, pp 7-10,
+    3. [187]^ Programming Perl, 5th Edition, preface
+    4. [188]^ Robbins, Arnold; Hannah, Elbert; Lamb, Linda (2008).
+       [189]"Learning the vi and Vim Editors". p. 205.
+    5. [190]^ Easttom, Chuck (2012). [191]"Essential Linux
+       Administration:: A Comprehensive Guide for Beginners". p. 228.
+    6. [192]^ [193]"Csh Programming Considered Harmful".
+    7. [194]^ MSDN
+    8. [195]^ Windows NT 4 Workstation Resource Kit
+
+External links[[196]edit]
+
+   Wikibooks has a book on the topic of: [197]Shell Programming
+     * [198]An Introduction To Shell Programming by Greg Goebel
+     * [199]UNIX / Linux shell scripting tutorial by Steve Parker
+     * [200]Shell Scripting Primer (Apple)
+     * [201]What to watch out for when writing portable shell scripts by
+       Peter Seebach
+     * [202]Free Unix Shell scripting books
+     * [203]Beginners/BashScripting, Ubuntu Linux.
+
+   Retrieved from
+   "[204]https://en.wikipedia.org/w/index.php?title=Shell_script&oldid=741
+   516703"
+   [205]Categories:
+     * [206]Scripting languages
+
+   Hidden categories:
+     * [207]Articles needing additional references from February 2014
+     * [208]All articles needing additional references
+     * [209]Wikipedia introduction cleanup from September 2015
+     * [210]All pages needing cleanup
+     * [211]Articles covered by WikiProject Wikify from September 2015
+     * [212]All articles covered by WikiProject Wikify
+
+Navigation menu
+
+Personal tools
+
+     * Not logged in
+     * [213]Talk
+     * [214]Contributions
+     * [215]Create account
+     * [216]Log in
+
+Namespaces
+
+     * [217]Article
+     * [218]Talk
+
+Variants
+
+Views
+
+     * [219]Read
+     * [220]Edit
+     * [221]View history
+
+More
+
+Search
+
+   ____________________ Search Go
+
+Navigation
+
+     * [222]Main page
+     * [223]Contents
+     * [224]Featured content
+     * [225]Current events
+     * [226]Random article
+     * [227]Donate to Wikipedia
+     * [228]Wikipedia store
+
+Interaction
+
+     * [229]Help
+     * [230]About Wikipedia
+     * [231]Community portal
+     * [232]Recent changes
+     * [233]Contact page
+
+Tools
+
+     * [234]What links here
+     * [235]Related changes
+     * [236]Upload file
+     * [237]Special pages
+     * [238]Permanent link
+     * [239]Page information
+     * [240]Wikidata item
+     * [241]Cite this page
+
+Print/export
+
+     * [242]Create a book
+     * [243]Download as PDF
+     * [244]Printable version
+
+Languages
+
+     * [245]a+l+e+r+b+y+tm
+     * [246]Cestina
+     * [247]Galego
+     * [248]­´
+     * [249]Íslenska
+     * [250]Nederlands
+     * [251]¥¬
+     * [252]Português
+     * [253]Russkij
+     * [254]Suomi
+     * [255]­
+     *
+
+   [256]Edit links
+
+     * This page was last modified on 28 September 2016, at 00:41.
+     * Text is available under the [257]Creative Commons
+       Attribution-ShareAlike License; additional terms may apply. By
+       using this site, you agree to the [258]Terms of Use and
+       [259]Privacy Policy. Wikipedia® is a registered trademark of the
+       [260]Wikimedia Foundation, Inc., a non-profit organization.
+
+     * [261]Privacy policy
+     * [262]About Wikipedia
+     * [263]Disclaimers
+     * [264]Contact Wikipedia
+     * [265]Developers
+     * [266]Cookie statement
+     * [267]Mobile view
+
+     * [268]Wikimedia Foundation
+     * [269]Powered by MediaWiki
+
+References
+
+   Visible links
+   1. android-app://org.wikipedia/http/en.m.wikipedia.org/wiki/Shell_script
+   2. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit
+   3. https://en.wikipedia.org/w/opensearch_desc.php
+   4. https://creativecommons.org/licenses/by-sa/3.0/
+   5. https://en.wikipedia.org/wiki/Shell_script#mw-head
+   6. https://en.wikipedia.org/wiki/Shell_script#p-search
+   7. https://en.wikipedia.org/wiki/Batch_file
+   8. https://en.wikipedia.org/wiki/Windows_PowerShell#Scripting
+   9. https://en.wikipedia.org/wiki/Cmd.exe
+  10. https://en.wikipedia.org/wiki/DIGITAL_Command_Language
+  11. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit
+  12. https://en.wikipedia.org/wiki/Talk:Shell_script
+  13. https://en.wikipedia.org/wiki/Help:Maintenance_template_removal
+  14. https://en.wikipedia.org/wiki/Wikipedia:Verifiability
+  15. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit
+  16. https://en.wikipedia.org/wiki/Help:Introduction_to_referencing_with_Wiki_Markup/1
+  17. https://en.wikipedia.org/wiki/Help:Maintenance_template_removal
+  18. https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Lead_section
+  19. https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Layout
+  20. https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style/Lead_section#Length
+  21. https://en.wikipedia.org/wiki/Talk:Shell_script
+  22. https://en.wikipedia.org/wiki/Help:Maintenance_template_removal
+  23. https://en.wikipedia.org/wiki/FreeBSD
+  24. https://en.wikipedia.org/wiki/Ipfirewall
+  25. https://en.wikipedia.org/wiki/Computer_program
+  26. https://en.wikipedia.org/wiki/Unix_shell
+  27. https://en.wikipedia.org/wiki/Command-line_interpreter
+  28. https://en.wikipedia.org/wiki/Shell_script#cite_note-1
+  29. https://en.wikipedia.org/wiki/Scripting_language
+  30. https://en.wikipedia.org/wiki/4NT
+  31. https://en.wikipedia.org/wiki/Cmd.exe
+  32. https://en.wikipedia.org/wiki/Korn_Shell
+  33. https://en.wikipedia.org/wiki/Bourne_shell
+  34. https://en.wikipedia.org/wiki/C_Shell
+  35. https://en.wikipedia.org/wiki/Bourne_Again_Shell
+  36. https://en.wikipedia.org/wiki/Remote_Shell
+  37. https://en.wikipedia.org/wiki/Secure_Shell
+  38. https://en.wikipedia.org/wiki/Tcl/Tk
+  39. https://en.wikipedia.org/w/index.php?title=Tclsh&action=edit&redlink=1
+  40. https://en.wikipedia.org/w/index.php?title=Wish_(shell)&action=edit&redlink=1
+  41. https://en.wikipedia.org/wiki/ALGOL
+  42. https://en.wikipedia.org/wiki/Shell_script#cite_note-2
+  43. https://en.wikipedia.org/wiki/Awk
+  44. https://en.wikipedia.org/wiki/Sed
+  45. https://en.wikipedia.org/wiki/Grep
+  46. https://en.wikipedia.org/wiki/BASIC
+  47. https://en.wikipedia.org/wiki/Lisp_(programming_language)
+  48. https://en.wikipedia.org/wiki/C_(programming_language)
+  49. https://en.wikipedia.org/wiki/Perl
+  50. https://en.wikipedia.org/wiki/Shell_script#cite_note-3
+  51. https://en.wikipedia.org/wiki/Almquist_shell
+  52. https://en.wikipedia.org/wiki/Msh
+  53. https://en.wikipedia.org/w/index.php?title=Ysh&action=edit&redlink=1
+  54. https://en.wikipedia.org/wiki/Zsh
+  55. https://en.wikipedia.org/wiki/Tcsh
+  56. https://en.wikipedia.org/w/index.php?title=Perl_Shell&action=edit&redlink=1
+  57. https://en.wikipedia.org/wiki/Python_(programming_language)
+  58. https://en.wikipedia.org/wiki/Ruby_(programming_language)
+  59. https://en.wikipedia.org/wiki/C_(programming_language)
+  60. https://en.wikipedia.org/wiki/Java_(programming_language)
+  61. https://en.wikipedia.org/wiki/Perl
+  62. https://en.wikipedia.org/wiki/Pascal_(programming_language)
+  63. https://en.wikipedia.org/wiki/Rexx
+  64. https://en.wikipedia.org/w/index.php?title=Osh_(shell)&action=edit&redlink=1
+  65. https://en.wikipedia.org/wiki/MKS_Toolkit
+  66. https://en.wikipedia.org/wiki/Cygwin
+  67. https://en.wikipedia.org/wiki/UWIN
+  68. https://en.wikipedia.org/wiki/Interix
+  69. https://en.wikipedia.org/wiki/Inter-process_communication
+  70. https://en.wikipedia.org/wiki/System_call
+  71. https://en.wikipedia.org/wiki/API
+  72. https://en.wikipedia.org/wiki/Hamilton_C_Shell
+  73. https://en.wikipedia.org/wiki/Windows_Services_for_UNIX
+  74. https://en.wikipedia.org/wiki/Environmental_subsystem
+  75. https://en.wikipedia.org/wiki/Shell_script#Capabilities
+  76. https://en.wikipedia.org/wiki/Shell_script#Shortcuts
+  77. https://en.wikipedia.org/wiki/Shell_script#Batch_jobs
+  78. https://en.wikipedia.org/wiki/Shell_script#Generalization
+  79. https://en.wikipedia.org/wiki/Shell_script#Verisimilitude
+  80. https://en.wikipedia.org/wiki/Shell_script#Programming
+  81. https://en.wikipedia.org/wiki/Shell_script#Other_scripting_languages
+  82. https://en.wikipedia.org/wiki/Shell_script#Life_cycle
+  83. https://en.wikipedia.org/wiki/Shell_script#Advantages_and_disadvantages
+  84. https://en.wikipedia.org/wiki/Shell_script#Shell_Scripting_On_Other_Operating_Systems
+  85. https://en.wikipedia.org/wiki/Shell_script#See_also
+  86. https://en.wikipedia.org/wiki/Shell_script#References
+  87. https://en.wikipedia.org/wiki/Shell_script#External_links
+  88. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit&section=1
+  89. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit&section=2
+  90. https://en.wikipedia.org/wiki/Ls
+  91. https://en.wikipedia.org/wiki/Shebang_(Unix)
+  92. https://en.wikipedia.org/wiki/Dotfile
+  93. https://en.wikipedia.org/wiki/Programming_language_syntax
+  94. https://en.wikipedia.org/wiki/Ls
+  95. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit&section=3
+  96. https://en.wikipedia.org/wiki/C_shell
+  97. https://en.wikipedia.org/wiki/Make_(software)
+  98. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit&section=4
+  99. https://en.wikipedia.org/wiki/Bash_(Unix_shell)
+ 100. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit&section=5
+ 101. https://en.wikipedia.org/wiki/Interpreter_directive
+ 102. https://en.wikipedia.org/wiki/Perl
+ 103. https://en.wikipedia.org/wiki/Python_(programming_language)
+ 104. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit&section=6
+ 105. https://en.wikipedia.org/wiki/General-purpose_programming_language
+ 106. https://en.wikipedia.org/wiki/Comment_(computer_programming)
+ 107. https://en.wikipedia.org/wiki/Subroutine
+ 108. https://en.wikipedia.org/wiki/Sed
+ 109. https://en.wikipedia.org/wiki/Awk
+ 110. https://en.wikipedia.org/wiki/Perl
+ 111. https://en.wikipedia.org/wiki/Tcl
+ 112. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit&section=7
+ 113. https://en.wikipedia.org/wiki/Scripting_language
+ 114. https://en.wikipedia.org/wiki/High-level_programming_language
+ 115. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit&section=8
+ 116. https://en.wikipedia.org/wiki/Perl
+ 117. https://en.wikipedia.org/wiki/Python_(programming_language)
+ 118. https://en.wikipedia.org/wiki/C_(programming_language)
+ 119. https://en.wikipedia.org/wiki/Interpreter_directive
+ 120. https://en.wikipedia.org/wiki/File_extension
+ 121. https://en.wikipedia.org/wiki/Shell_script#cite_note-4
+ 122. https://en.wikipedia.org/wiki/Shell_script#cite_note-5
+ 123. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit&section=9
+ 124. https://en.wikipedia.org/wiki/Rm_(Unix)
+ 125. https://en.wikipedia.org/wiki/Root_directory
+ 126. https://en.wikipedia.org/wiki/Cp_(Unix)
+ 127. https://en.wikipedia.org/wiki/Mv
+ 128. https://en.wikipedia.org/wiki/Cd_(command)
+ 129. https://en.wikipedia.org/wiki/Dd_(Unix)
+ 130. https://en.wikipedia.org/wiki/Df_(Unix)
+ 131. https://en.wikipedia.org/wiki/Pipeline_(computing)
+ 132. https://en.wikipedia.org/wiki/Filter_(software)
+ 133. https://en.wikipedia.org/wiki/Larry_Wall
+ 134. https://en.wikipedia.org/wiki/Perl
+ 135. https://en.wikipedia.org/wiki/Shell_script#cite_note-6
+ 136. https://en.wikipedia.org/wiki/Programming_language_syntax
+ 137. https://en.wikipedia.org/wiki/Scsh
+ 138. https://en.wikipedia.org/wiki/Scheme_(programming_language)
+ 139. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit&section=10
+ 140. https://en.wikipedia.org/wiki/Cygwin
+ 141. https://en.wikipedia.org/wiki/MKS_Toolkit
+ 142. https://en.wikipedia.org/wiki/Interix
+ 143. https://en.wikipedia.org/wiki/Hamilton_C_shell
+ 144. https://en.wikipedia.org/wiki/UWIN
+ 145. https://en.wikipedia.org/wiki/XLNT
+ 146. https://en.wikipedia.org/wiki/Windows_Script_Host
+ 147. https://en.wikipedia.org/wiki/Common_Gateway_Interface
+ 148. https://en.wikipedia.org/wiki/Shell_script#cite_note-7
+ 149. https://en.wikipedia.org/wiki/Shell_script#cite_note-8
+ 150. https://en.wikipedia.org/wiki/4NT
+ 151. https://en.wikipedia.org/wiki/4DOS
+ 152. https://en.wikipedia.org/wiki/4OS2
+ 153. https://en.wikipedia.org/wiki/Take_Command_(command_line_interpreter)
+ 154. https://en.wikipedia.org/wiki/JScript
+ 155. https://en.wikipedia.org/wiki/Visual_Basic_for_Applications
+ 156. https://en.wikipedia.org/wiki/PC_DOS
+ 157. https://en.wikipedia.org/wiki/DR_DOS
+ 158. https://en.wikipedia.org/w/index.php?title=KixTart&action=edit&redlink=1
+ 159. https://en.wikipedia.org/wiki/QBasic
+ 160. https://en.wikipedia.org/wiki/BASIC
+ 161. https://en.wikipedia.org/wiki/Rexx
+ 162. https://en.wikipedia.org/wiki/Perl
+ 163. https://en.wikipedia.org/wiki/Python_(programming_language)
+ 164. https://en.wikipedia.org/wiki/Windows_Script_Host
+ 165. https://en.wikipedia.org/wiki/Awk
+ 166. https://en.wikipedia.org/wiki/Sed
+ 167. https://en.wikipedia.org/wiki/Tcl
+ 168. https://en.wikipedia.org/wiki/Recursion
+ 169. https://en.wikipedia.org/wiki/Sorting
+ 170. https://en.wikipedia.org/wiki/Visual_Basic_for_Applications
+ 171. https://en.wikipedia.org/wiki/VBScript
+ 172. https://en.wikipedia.org/wiki/Component_Object_Model
+ 173. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit&section=11
+ 174. https://en.wikipedia.org/wiki/Glue_code
+ 175. https://en.wikipedia.org/wiki/Interpreter_directive
+ 176. https://en.wikipedia.org/wiki/Shebang_(Unix)
+ 177. https://en.wikipedia.org/wiki/Unix_shell
+ 178. https://en.wikipedia.org/wiki/Windows_PowerShell
+ 179. https://en.wikipedia.org/wiki/Windows_Script_Host
+ 180. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit&section=12
+ 181. https://en.wikipedia.org/wiki/Shell_script#cite_ref-1
+ 182. https://en.wikipedia.org/wiki/Brian_Kernighan
+ 183. https://en.wikipedia.org/wiki/Rob_Pike
+ 184. https://en.wikipedia.org/wiki/International_Standard_Book_Number
+ 185. https://en.wikipedia.org/wiki/Special:BookSources/0-13-937699-2
+ 186. https://en.wikipedia.org/wiki/Shell_script#cite_ref-2
+ 187. https://en.wikipedia.org/wiki/Shell_script#cite_ref-3
+ 188. https://en.wikipedia.org/wiki/Shell_script#cite_ref-4
+ 189. https://books.google.com/books?id=J5nKVVg5YHAC
+ 190. https://en.wikipedia.org/wiki/Shell_script#cite_ref-5
+ 191. https://books.google.com/books?id=zZYLAAAAQBAJ
+ 192. https://en.wikipedia.org/wiki/Shell_script#cite_ref-6
+ 193. http://www.ooblick.com/text/CshProgrammingConsideredHarmful.html
+ 194. https://en.wikipedia.org/wiki/Shell_script#cite_ref-7
+ 195. https://en.wikipedia.org/wiki/Shell_script#cite_ref-8
+ 196. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit&section=13
+ 197. https://en.wikibooks.org/wiki/Shell_Programming
+ 198. http://www.faqs.org/docs/air/tsshell.html
+ 199. http://steve-parker.org/sh/sh.shtml
+ 200. http://developer.apple.com/mac/library/documentation/OpenSource/Conceptual/ShellScripting/
+ 201. http://www.linux.com/articles/34658
+ 202. http://freebookcentre.net/UnixCategory/Free-Unix-Shell-Programming-Books-Download.html
+ 203. https://help.ubuntu.com/community/Beginners/BashScripting
+ 204. https://en.wikipedia.org/w/index.php?title=Shell_script&oldid=741516703
+ 205. https://en.wikipedia.org/wiki/Help:Category
+ 206. https://en.wikipedia.org/wiki/Category:Scripting_languages
+ 207. https://en.wikipedia.org/wiki/Category:Articles_needing_additional_references_from_February_2014
+ 208. https://en.wikipedia.org/wiki/Category:All_articles_needing_additional_references
+ 209. https://en.wikipedia.org/wiki/Category:Wikipedia_introduction_cleanup_from_September_2015
+ 210. https://en.wikipedia.org/wiki/Category:All_pages_needing_cleanup
+ 211. https://en.wikipedia.org/wiki/Category:Articles_covered_by_WikiProject_Wikify_from_September_2015
+ 212. https://en.wikipedia.org/wiki/Category:All_articles_covered_by_WikiProject_Wikify
+ 213. https://en.wikipedia.org/wiki/Special:MyTalk
+ 214. https://en.wikipedia.org/wiki/Special:MyContributions
+ 215. https://en.wikipedia.org/w/index.php?title=Special:CreateAccount&returnto=Shell+script
+ 216. https://en.wikipedia.org/w/index.php?title=Special:UserLogin&returnto=Shell+script
+ 217. https://en.wikipedia.org/wiki/Shell_script
+ 218. https://en.wikipedia.org/wiki/Talk:Shell_script
+ 219. https://en.wikipedia.org/wiki/Shell_script
+ 220. https://en.wikipedia.org/w/index.php?title=Shell_script&action=edit
+ 221. https://en.wikipedia.org/w/index.php?title=Shell_script&action=history
+ 222. https://en.wikipedia.org/wiki/Main_Page
+ 223. https://en.wikipedia.org/wiki/Portal:Contents
+ 224. https://en.wikipedia.org/wiki/Portal:Featured_content
+ 225. https://en.wikipedia.org/wiki/Portal:Current_events
+ 226. https://en.wikipedia.org/wiki/Special:Random
+ 227. https://donate.wikimedia.org/wiki/Special:FundraiserRedirector?utm_source=donate&utm_medium=sidebar&utm_campaign=C13_en.wikipedia.org&uselang=en
+ 228. https://shop.wikimedia.org/
+ 229. https://en.wikipedia.org/wiki/Help:Contents
+ 230. https://en.wikipedia.org/wiki/Wikipedia:About
+ 231. https://en.wikipedia.org/wiki/Wikipedia:Community_portal
+ 232. https://en.wikipedia.org/wiki/Special:RecentChanges
+ 233. https://en.wikipedia.org/wiki/Wikipedia:Contact_us
+ 234. https://en.wikipedia.org/wiki/Special:WhatLinksHere/Shell_script
+ 235. https://en.wikipedia.org/wiki/Special:RecentChangesLinked/Shell_script
+ 236. https://en.wikipedia.org/wiki/Wikipedia:File_Upload_Wizard
+ 237. https://en.wikipedia.org/wiki/Special:SpecialPages
+ 238. https://en.wikipedia.org/w/index.php?title=Shell_script&oldid=741516703
+ 239. https://en.wikipedia.org/w/index.php?title=Shell_script&action=info
+ 240. https://www.wikidata.org/wiki/Q959549
+ 241. https://en.wikipedia.org/w/index.php?title=Special:CiteThisPage&page=Shell_script&id=741516703
+ 242. https://en.wikipedia.org/w/index.php?title=Special:Book&bookcmd=book_creator&referer=Shell+script
+ 243. https://en.wikipedia.org/w/index.php?title=Special:Book&bookcmd=render_article&arttitle=Shell+script&returnto=Shell+script&oldid=741516703&writer=rdf2latex
+ 244. https://en.wikipedia.org/w/index.php?title=Shell_script&printable=yes
+ 245. https://ar.wikipedia.org/wiki/%D8%B3%D9%83%D8%B1%D8%A8%D8%AA_%D8%B4%D9%84
+ 246. https://cs.wikipedia.org/wiki/Shellov%C3%BD_skript
+ 247. https://gl.wikipedia.org/wiki/Shell_script
+ 248. https://ko.wikipedia.org/wiki/%EC%85%B8_%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8
+ 249. https://is.wikipedia.org/wiki/Skeljaforrit
+ 250. https://nl.wikipedia.org/wiki/Shellscript
+ 251. https://ja.wikipedia.org/wiki/%E3%82%B7%E3%82%A7%E3%83%AB%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88
+ 252. https://pt.wikipedia.org/wiki/Shell_script
+ 253. https://ru.wikipedia.org/wiki/%D0%A1%D1%86%D0%B5%D0%BD%D0%B0%D1%80%D0%B8%D0%B9_%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D0%BD%D0%BE%D0%B9_%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B8
+ 254. https://fi.wikipedia.org/wiki/Shell-skripti
+ 255. https://zh.wikipedia.org/wiki/Shell%E8%84%9A%E6%9C%AC
+ 256. https://www.wikidata.org/wiki/Q959549#sitelinks-wikipedia
+ 257. https://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License
+ 258. https://wikimediafoundation.org/wiki/Terms_of_Use
+ 259. https://wikimediafoundation.org/wiki/Privacy_policy
+ 260. https://www.wikimediafoundation.org/
+ 261. https://wikimediafoundation.org/wiki/Privacy_policy
+ 262. https://en.wikipedia.org/wiki/Wikipedia:About
+ 263. https://en.wikipedia.org/wiki/Wikipedia:General_disclaimer
+ 264. https://en.wikipedia.org/wiki/Wikipedia:Contact_us
+ 265. https://www.mediawiki.org/wiki/Special:MyLanguage/How_to_contribute
+ 266. https://wikimediafoundation.org/wiki/Cookie_statement
+ 267. https://en.m.wikipedia.org/w/index.php?title=Shell_script&mobileaction=toggle_view_mobile
+ 268. https://wikimediafoundation.org/
+ 269. https://www.mediawiki.org/
+
+   Hidden links:
+ 271. https://en.wikipedia.org/wiki/File:Question_book-new.svg
+ 272. https://en.wikipedia.org/wiki/File:FreeBSD_10_vi_RC_Firewall.png
+ 273. https://en.wikipedia.org/wiki/File:FreeBSD_10_vi_RC_Firewall.png
+ 274. https://en.wikipedia.org/wiki/File:Wikibooks-logo-en-noslogan.svg
+ 275. https://en.wikipedia.org/wiki/Shell_script
+ 276. https://en.wikipedia.org/wiki/Shell_script
+ 277. https://en.wikipedia.org/wiki/Main_Page
+ 278. https://en.wikipedia.org/wiki/Shell_script
+ 279. https://creativecommons.org/licenses/by-sa/3.0/
